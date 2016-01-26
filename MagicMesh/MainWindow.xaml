@@ -1,0 +1,510 @@
+﻿<Window x:Class="MagicMesh.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MagicMesh"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Title="MagicMesh" Height="200" Width="300"
+        MinHeight="400" MinWidth="400"
+        WindowStyle="None" ResizeMode="NoResize"
+        Icon=".\Images\Icon.ico"
+        FocusManager.FocusedElement="{Binding RelativeSource={x:Static RelativeSource.Self}, Mode=OneTime}"
+        DataContext="{x:Static local:MainViewModel.Instance}">
+
+    <Window.Resources>
+        <BitmapImage x:Key="NewFileIcon" UriSource=".\Images\NewFile_6276.png"/>
+        <BitmapImage x:Key="OpenIcon" UriSource=".\Images\Open_6529.png"/>
+        <BitmapImage x:Key="SaveIcon" UriSource=".\Images\Save_6530.png"/>
+        <BitmapImage x:Key="ExportIcon" UriSource=".\Images\ExportReportData_10565.png"/>
+        <BitmapImage x:Key="UndoIcon" UriSource=".\Images\Undo_16x.png"/>
+        <BitmapImage x:Key="RedoIcon" UriSource=".\Images\Redo_16x.png"/>
+        <BitmapImage x:Key="CutIcon" UriSource=".\Images\Cut_6523.png"/>
+        <BitmapImage x:Key="CopyIcon" UriSource=".\Images\Copy_6524.png"/>
+        <BitmapImage x:Key="PasteIcon" UriSource=".\Images\Paste_6520.png"/>
+
+        <BitmapImage x:Key="MinimizeIcon" UriSource=".\Images\Minimize.png"/>
+        <BitmapImage x:Key="MaximizeIcon" UriSource=".\Images\Maximize.png"/>
+        <BitmapImage x:Key="RestoreIcon" UriSource=".\Images\Restore.png"/>
+        <BitmapImage x:Key="CloseIcon" UriSource=".\Images\Close.png"/>
+        <BitmapImage x:Key="MinimizeMenuIcon" UriSource=".\Images\Minimize_Menu.png"/>
+        <BitmapImage x:Key="MaximizeMenuIcon" UriSource=".\Images\Maximize_Menu.png"/>
+        <BitmapImage x:Key="RestoreMenuIcon" UriSource=".\Images\Restore_Menu.png"/>
+        <BitmapImage x:Key="CloseMenuIcon" UriSource=".\Images\Close_Menu.png"/>
+
+        <ControlTemplate x:Key="TitleBarButtonTemplate" TargetType="Button">
+            <Grid>
+                <Rectangle Name="Rectangle" Width="30" Height="30" Fill="White"/>
+                <ContentPresenter/>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="Rectangle" Storyboard.TargetProperty="Fill.Color" From="White" To="#FFE0F2FD" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Rectangle" Storyboard.TargetProperty="Fill.Color">
+                                    <DiscreteColorKeyFrame Value="White" KeyTime="0:0:0"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="TitleBarCloseButtonTemplate" TargetType="Button">
+            <Grid>
+                <Rectangle Name="Rectangle" Width="30" Height="30" Fill="White" Opacity="0.45"/>
+                <ContentPresenter/>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="Rectangle" Storyboard.TargetProperty="Fill.Color" From="White" To="#FFF02251" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Rectangle" Storyboard.TargetProperty="Fill.Color">
+                                    <DiscreteColorKeyFrame Value="White" KeyTime="0:0:0"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <DataTemplate x:Key="TabHeaderTemplate" DataType="{x:Type local:Project}">
+            <Grid Margin="2,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="4,0" Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock x:Name="SavedIndicator"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" VerticalAlignment="Center" Command="{Binding RemoveCommand}"
+                        Visibility="{Binding Path=(local:Extensions.ShowCloseButtons),
+                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}},
+                            Converter={StaticResource VisibilityConverter}}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Opacity="0" Fill="#FFF02251">
+                                    <Rectangle.Triggers>
+                                        <EventTrigger RoutedEvent="MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="0.45" Duration="0:0:0.05"/>
+                                                    <ColorAnimation Storyboard.TargetName="ClosePath" Storyboard.TargetProperty="Stroke.Color"
+                                                                    From="Gray" To="White" Duration="0:0:0.05"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.45" To="0" Duration="0:0:0.05"/>
+                                                    <ColorAnimation Storyboard.TargetName="ClosePath" Storyboard.TargetProperty="Stroke.Color"
+                                                                    From="White" To="Gray" Duration="0:0:0.05"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Rectangle.Triggers>
+                                </Rectangle>
+                                <Path x:Name="ClosePath" Width="14" Height="14" MaxWidth="14" MaxHeight="14"
+                                      Stroke="Gray" StrokeThickness="1.3" Data="M4,4 L10,10 M4,10 L10,4" IsHitTestVisible="False"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+            
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSaved}" Value="False">
+                    <Setter TargetName="SavedIndicator" Property="Text" Value="*"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ListBoxItemTemplate" DataType="{x:Type local:GeometryFigure}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Margin="6,0" Text="{Binding Name}" FontSize="14" VerticalAlignment="Center"/>
+                <Grid x:Name="Grid" Grid.Row="1" Margin="-2,2,-2,-2" Background="White" ClipToBounds="True">
+                    <Canvas x:Name="Canvas">
+                        <Canvas.Tag>
+                            <system:Double>0.0</system:Double>
+                        </Canvas.Tag>
+                        <Canvas.Height>
+                            <MultiBinding Converter="{StaticResource MultiplyConverter}">
+                                <Binding Path="ActualHeight" ElementName="ListBox"/>
+                                <Binding Path="Tag" RelativeSource="{RelativeSource Self}"/>
+                            </MultiBinding>
+                        </Canvas.Height>
+
+                        <ListBox x:Name="ListBox" ItemsSource="{Binding Sections}">
+                            <ListBox.Width>
+                                <MultiBinding Converter="{StaticResource MultiplyConverter}">
+                                    <Binding Path="ActualWidth" ElementName="Canvas"/>
+                                </MultiBinding>
+                            </ListBox.Width>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:GeometrySection}">
+                                    <TextBlock Text="{Binding Name}" Margin="10,0,0,0"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Canvas>
+                </Grid>
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Canvas" Storyboard.TargetProperty="Tag" To="1" Duration="0:0:0.5">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Canvas" Storyboard.TargetProperty="Tag" To="0" Duration="0:0:0.5">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="EditorModeTemplate" DataType="{x:Type local:EditorMode}">
+            <Border Width ="40" Height="40" Background="Transparent" ToolTipService.ShowDuration="10000">
+                <Border.ToolTip>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Description}"/>
+                    </Grid>
+                </Border.ToolTip>
+
+                <Image Source="{Binding Image}" Stretch="None" SnapsToDevicePixels="True"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Border>
+        </DataTemplate>
+
+        <Style x:Key="EditorModeItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border x:Name="Border1" Background="White" BorderThickness="5" BorderBrush="Transparent">
+                                <Border x:Name="Border2" BorderThickness="1" BorderBrush="Transparent">
+                                    <ContentPresenter/>
+                                </Border>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetName="Border1" Storyboard.TargetProperty="BorderBrush.Color" From="Transparent" To="#FFE0F2FD" Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border1" Storyboard.TargetProperty="BorderBrush.Color">
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0" Value="Transparent"/>
+                                                </ColorAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border2" Storyboard.TargetProperty="BorderBrush.Color">
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0" Value="LightGray"/>
+                                                </ColorAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border2" Storyboard.TargetProperty="BorderBrush.Color">
+                                                    <DiscreteColorKeyFrame KeyTime="0:0:0" Value="Transparent"/>
+                                                </ColorAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="Close" CanExecute="CanExecuteCommandDefault"/>
+        <CommandBinding Command="local:Commands.Minimize" Executed="Minimize" CanExecute="CanExecuteCommandDefault"/>
+        <CommandBinding Command="local:Commands.Maximize" Executed="Maximize" CanExecute="CanExecuteCommandDefault"/>
+    </Window.CommandBindings>
+    
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="N" Command="{Binding NewCommand}"/>
+        <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}"/>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}"/>
+    </Window.InputBindings>
+
+    <Border BorderBrush="LightGray" BorderThickness="1">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" SnapsToDevicePixels="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Minimize" Icon="{StaticResource MinimizeMenuIcon}" Command="local:Commands.Minimize"/>
+                        <MenuItem x:Name="MaximizeItem" Header="Maximize" Icon="{StaticResource MaximizeMenuIcon}" Command="local:Commands.Maximize"/>
+                        <Separator/>
+                        <MenuItem Header="Close" Icon="{StaticResource CloseMenuIcon}" Command="Close"/>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+
+                <Image Grid.Column="0" Margin="3,0"
+                           Width="16" Height="16"
+                           Source="{Binding Icon, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                           VerticalAlignment="Center" Stretch="Fill"
+                           SnapsToDevicePixels="True"/>
+
+                <Button Grid.Column="1" MouseDoubleClick="TitelBarDoubleClickHandler" Focusable="False">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock FontSize="14" TextAlignment="Center"
+                                       Text="{Binding Title, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                                       IsHitTestVisible="True"
+                                       MouseLeftButtonDown="TitleBarMouseDownHandler"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button Grid.Column="2" Margin="0,-4,0,0" VerticalAlignment="Center" Template="{StaticResource TitleBarButtonTemplate}" Command="local:Commands.Minimize"
+                        ToolTip="Minimize" ToolTipService.InitialShowDelay="2000">
+                    <Image Width="16" Height="16" Source="{StaticResource MinimizeIcon}"/>
+                </Button>
+                <Button Grid.Column="3" Margin="0,-4,0,0" VerticalAlignment="Center" Template="{StaticResource TitleBarButtonTemplate}" Command="local:Commands.Maximize"
+                        ToolTip="Maximize" ToolTipService.InitialShowDelay="2000">
+                    <Image Width="16" Height="16">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="{StaticResource MaximizeIcon}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Maximized, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                        <Setter Property="Source" Value="{StaticResource RestoreIcon}"/>
+                                        <Setter Property="ToolTip" Value="Restore"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
+                <Button Grid.Column="4" Margin="0,-4,-4,0" VerticalAlignment="Top" Template="{StaticResource TitleBarCloseButtonTemplate}" Command="Close"
+                        ToolTip="Close" ToolTipService.InitialShowDelay="2000">
+                    <Image Width="16" Height="16" Source="{StaticResource CloseIcon}"/>
+                </Button>
+            </Grid>
+
+            <Menu Grid.Row="2" IsMainMenu="True">
+                <MenuItem Header="_File">
+                    <MenuItem Header="New" InputGestureText="Ctrl+N" Icon="{StaticResource NewFileIcon}" Command="{Binding NewCommand}"/>
+                    <MenuItem Header="Open..." InputGestureText="Ctrl+O" Icon="{StaticResource OpenIcon}" Command="{Binding OpenCommand}"/>
+                    <MenuItem Header="Save" InputGestureText="Ctrl+S" Icon="{StaticResource SaveIcon}" Command="{Binding SaveCommand}"/>
+                    <MenuItem Header="Save as..." Command="{Binding SaveAsCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Export as mesh..." InputGestureText="Ctrl+E" Icon="{StaticResource ExportIcon}" Command="{Binding ExportCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Close" InputGestureText="Alt+F4" Command="Close"/>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="Undo" InputGestureText="Ctrl+Z" Icon="{StaticResource UndoIcon}" Command="{Binding UndoCommand}"/>
+                    <MenuItem Header="Redo" InputGestureText="Shift+Z" Icon="{StaticResource RedoIcon}" Command="{Binding RedoCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Cut" InputGestureText="Ctrl+X" Icon="{StaticResource CutIcon}"/>
+                    <MenuItem Header="Copy" InputGestureText="Ctrl+C" Icon="{StaticResource CopyIcon}"/>
+                    <MenuItem Header="Paste" InputGestureText="Ctrl+V" Icon="{StaticResource PasteIcon}"/>
+                    <MenuItem Header="Delete" InputGestureText="Del"/>
+                </MenuItem>
+            </Menu>
+            
+            <ToolBar Grid.Row="3">
+                <Button ToolTip="New" Command="{Binding NewCommand}">
+                    <Image Margin="1" Source="{StaticResource NewFileIcon}"/>
+                </Button>
+                <Button ToolTip="Open..." Command="{Binding OpenCommand}">
+                    <Image Margin="1" Source="{StaticResource OpenIcon}"/>
+                </Button>
+                <Button ToolTip="Save" Command="{Binding SaveCommand}">
+                    <Image Margin="1" Source="{StaticResource SaveIcon}"/>
+                </Button>
+                <Separator/>
+                <Button ToolTip="Export as mesh" Command="{Binding ExportCommand}">
+                    <Image Margin="1" Source="{StaticResource ExportIcon}"/>
+                </Button>
+                <Separator/>
+                <Button ToolTip="Undo" Command="{Binding UndoCommand}">
+                    <Image Margin="1" Source="{StaticResource UndoIcon}"/>
+                </Button>
+                <Button ToolTip="Redo" Command="{Binding RedoCommand}">
+                    <Image Margin="1" Source="{StaticResource RedoIcon}"/>
+                </Button>
+                <Separator/>
+                <Button ToolTip="Cut">
+                    <Image Margin="1" Source="{StaticResource CutIcon}"/>
+                </Button>
+                <Button ToolTip="Copy">
+                    <Image Margin="1" Source="{StaticResource CopyIcon}"/>
+                </Button>
+                <Button ToolTip="Paste">
+                    <Image Margin="1" Source="{StaticResource PasteIcon}"/>
+                </Button>
+                <Separator/>
+                <ComboBox Width="50" IsEditable="true"
+                          Text="{Binding SelectedProject.Scale, Mode=TwoWay, Converter={StaticResource PercentageConverter}}">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="{x:Type system:Single}">
+                            <system:Single>10</system:Single>
+                            <system:Single>50</system:Single>
+                            <system:Single>100</system:Single>
+                            <system:Single>150</system:Single>
+                            <system:Single>200</system:Single>
+                            <system:Single>250</system:Single>
+                            <system:Single>500</system:Single>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type system:Int32}">
+                            <TextBlock Text="{Binding StringFormat='{}{0}%'}" TextAlignment="Right"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </ToolBar>
+
+            <Grid Grid.Row="4" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Border Grid.Column="0" Background="White" BorderThickness="1" BorderBrush="LightGray" VerticalAlignment="Top">
+                    <Border.Effect>
+                        <DropShadowEffect Color="LightGray" Opacity="0.3" ShadowDepth="3" RenderingBias="Performance" BlurRadius="10"/>
+                    </Border.Effect>
+                    <ListBox Margin="5"
+                             ItemsSource="{Binding EditorModes}"
+                             SelectedItem="{Binding CurrentEditorMode, Mode=TwoWay}"
+                             ItemTemplate="{StaticResource EditorModeTemplate}"
+                             ItemContainerStyle="{StaticResource EditorModeItemStyle}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical" IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </Border>
+
+                <Border Grid.Column="1" Width="20" BorderBrush="LightGray" BorderThickness="0,0,1,0" SnapsToDevicePixels="True"/>
+
+                <TabControl Grid.Column="2"
+                            ItemsSource="{Binding OpenProjects}"
+                            SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                            ItemTemplate="{StaticResource TabHeaderTemplate}"
+                            local:Extensions.ShowCloseButtons="True">
+                    <TabControl.ContentTemplate>
+                        <DataTemplate DataType="{x:Type local:Project}">
+                            <Border Margin="0,10,0,0" BorderBrush="LightGray" BorderThickness="0,1,0,0">
+                                <Grid>
+                                    <Grid.Effect>
+                                        <DropShadowEffect Color="LightGray" ShadowDepth="3" RenderingBias="Performance" BlurRadius="10"/>
+                                    </Grid.Effect>
+
+                                    <Grid Margin="15" Background="White" ClipToBounds="True">
+                                        <local:MeshEditor Background="White"
+                                                          Mode="{Binding Path=DataContext.CurrentEditorMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                                                          Project="{Binding Path=DataContext.SelectedProject, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                                                          Translation="{Binding Translation, Mode=TwoWay}" Scale="{Binding Scale, Mode=TwoWay}"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
+
+                <GridSplitter Grid.Column="3" Width="10" Background="White" HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext"/>
+                <Border Grid.Column="3" BorderBrush="LightGray" BorderThickness="1,0,0,0" SnapsToDevicePixels="True"/>
+
+                <ListBox Grid.Column="4"
+                         ItemsSource="{Binding SelectedProject.Figures}"
+                         ItemTemplate="{StaticResource ListBoxItemTemplate}"/>
+            </Grid>
+
+            <Grid Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <ResizeGrip Margin="-4" PreviewMouseLeftButtonDown="WindowResizeHandler"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

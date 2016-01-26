@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Artentus.GameUtils.Audio.AudioEngine">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Members>
+      <Method Name="~AudioEngine" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Property Name="IGameComponent.IsSynchronized" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAACAAAAAAAIQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AudioEngine.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.Audio.AudioHandle">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <Members>
+      <Method Name="~AudioHandle" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Method Name="OnPlaybackStopped" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAIgAAIAACAAAAAgCAAAAABAAAAAAAAAoAIABAAAAAA=</HashCode>
+      <FileName>AudioHandle.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Artentus.GameUtils.Audio.PlaybackState">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAIAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PlaybackState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

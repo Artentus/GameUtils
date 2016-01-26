@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Artentus.GameUtils.Network.BinaryPackage">
+    <Position X="10.75" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAhAAAAAAAAAAAAAkAAAAAAAAAAAQQAAAAAA=</HashCode>
+      <FileName>BinaryPackage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.PackageSerializer">
+    <Position X="13" Y="2" Width="1.75" />
+    <Members>
+      <Field Name="Formatter" Hidden="true" />
+      <Method Name="PackageSerializer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAABAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PackageSerializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.SystemPackage">
+    <Position X="7" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAhAAAAAAAAAAAAAkAAAAAAAAAAAQQCAAAAA=</HashCode>
+      <FileName>SystemPackage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.SystemMessage">
+    <Position X="9.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SystemMessage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.PingMessage">
+    <Position X="12" Y="7.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PingMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.NotificationMessage">
+    <Position X="12" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NotificationMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.Udp.UdpServer">
+    <Position X="2.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAEAAAQAQIAAAAAgAIAAAJAAAAAA=</HashCode>
+      <FileName>Udp\UdpServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.Network.Udp.UdpMessage">
+    <Position X="5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Udp\UdpMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Artentus.GameUtils.Network.IPackage">
+    <Position X="8.75" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAhAAAAAAAAAAAAAEAAAAAAAAAAAQQAAAAAA=</HashCode>
+      <FileName>IPackage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Artentus.GameUtils.Network.IConnection">
+    <Position X="7" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACAAAAAgAAAAA=</HashCode>
+      <FileName>IConnection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Artentus.GameUtils.Network.IPackageTransmitter">
+    <Position X="0.5" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPackageTransmitter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Artentus.GameUtils.Network.IPackageReceiver">
+    <Position X="2.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPackageReceiver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Artentus.GameUtils.Network.IClient">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <InheritanceLine Type="Artentus.GameUtils.Network.IPackageTransmitter" FixedFromPoint="true">
+      <Path>
+        <Point X="1.625" Y="2.5" />
+        <Point X="1.625" Y="2.294" />
+        <Point X="3.25" Y="2.294" />
+        <Point X="3.25" Y="2.054" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IClient.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Artentus.GameUtils.Network.IServer">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <InheritanceLine Type="Artentus.GameUtils.Network.IPackageTransmitter" FixedFromPoint="true">
+      <Path>
+        <Point X="1.25" Y="2.5" />
+        <Point X="1.25" Y="1.733" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IServer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Artentus.GameUtils.Network.NotificationType">
+    <Position X="14" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIIAkAAAAAAAAA=</HashCode>
+      <FileName>NotificationType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

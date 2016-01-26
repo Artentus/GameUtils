@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Artentus.GameUtils.Physics.PhysicsObject">
+    <Position X="2.5" Y="0.75" Width="2.5" />
+    <Members>
+      <Method Name="ApplyForceInner" Hidden="true" />
+      <Method Name="ApplyImpulse" Hidden="true" />
+      <Method Name="ClearForces" Hidden="true" />
+      <Field Name="forces" Hidden="true" />
+      <Property Name="InvertedMass" Hidden="true" />
+      <Property Name="InvertedMomentOfInertia" Hidden="true" />
+      <Field Name="radius" Hidden="true" />
+      <Field Name="startCenter" Hidden="true" />
+      <Field Name="startPolygon" Hidden="true" />
+      <Field Name="torques" Hidden="true" />
+      <Method Name="UpdatePosition" Hidden="true" />
+      <Method Name="UpdateVelocity" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AGgEAAAACAAAACIBAAAAIAABQAgQEAAEAAAAAAaIACg=</HashCode>
+      <FileName>PhysicsObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.Physics.PhysicsManager">
+    <Position X="0.5" Y="0.75" Width="1.75" />
+    <Members>
+      <Method Name="~PhysicsManager" Hidden="true" />
+      <Method Name="AddImpulseContactPoint" Hidden="true" />
+      <Method Name="ApplyGravity" Hidden="true" />
+      <Method Name="ApplyImpulses" Hidden="true" />
+      <Field Name="collisions" Hidden="true" />
+      <Method Name="DetectCollisions" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Method Name="Edge_GetClosestPoint" Hidden="true" />
+      <Method Name="GetContactPoints" Hidden="true" />
+      <Method Name="GetContactPoints_EdgeEdge" Hidden="true" />
+      <Method Name="GetContactPoints_EdgeVertex" Hidden="true" />
+      <Method Name="GetContactPoints_VertexEdge" Hidden="true" />
+      <Method Name="GetContactPoints_VertexVertex" Hidden="true" />
+      <Method Name="GetSupportPoints" Hidden="true" />
+      <Property Name="IGameComponent.IsSynchronized" Hidden="true" />
+      <Field Name="lastUpdateTime" Hidden="true" />
+      <Field Name="objects" Hidden="true" />
+      <Field Name="overlapTime" Hidden="true" />
+      <Method Name="Step" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Struct Name="Artentus.GameUtils.Physics.PhysicsManager.Vsort" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>PhysicsManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CAYBAAAIACgAAhAAAAQAAAAAAQAAAEEgYAAAICABIAA=</HashCode>
+      <FileName>PhysicsManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Artentus.GameUtils.Physics.Force">
+    <Position X="0.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAQAAAAA=</HashCode>
+      <FileName>Force.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

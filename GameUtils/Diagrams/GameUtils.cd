@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameUtils.GameLoop">
+    <Position X="0.5" Y="4.5" Width="2" />
+    <Members>
+      <Field Name="frameTimes" Hidden="true" />
+      <Method Name="IEngineComponent.IsCompatibleTo" Hidden="true" />
+      <Property Name="IEngineComponent.Tag" Hidden="true" />
+      <Method Name="RenderLoop" Hidden="true" />
+      <Field Name="renderThread" Hidden="true" />
+      <Method Name="UpdateLoop" Hidden="true" />
+      <Field Name="updateThread" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAIACCAAAYRAIAAAEAAAIAoBAAAAIVAEA=</HashCode>
+      <FileName>GameLoop.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.Math.MathHelper">
+    <Position X="13" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>gAAABAABABAgAAgAUAAGAAMBAA2QAAAAAAgAAkAAAAA=</HashCode>
+      <FileName>Math\MathHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.Layer">
+    <Position X="3" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAEEAAAAAAAAgAA=</HashCode>
+      <FileName>Layer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.GameEngine">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <Members>
+      <Field Name="Components" Hidden="true" />
+      <Field Name="ComponentsLocker" Hidden="true" />
+      <Method Name="GameEngine" Hidden="true" />
+      <Method Name="GameLoop_ResourceUpdateRequested" Hidden="true" />
+      <Field Name="ListenersLocker" Hidden="true" />
+      <Field Name="MessageListeners" Hidden="true" />
+      <Method Name="OnComponentAdded" Hidden="true" />
+      <Method Name="OnComponentRemoved" Hidden="true" />
+      <Method Name="OnGameLoopAdded" Hidden="true" />
+      <Method Name="OnGameLoopRemoved" Hidden="true" />
+      <Method Name="OnRendererAdded" Hidden="true" />
+      <Method Name="OnRendererRemoved" Hidden="true" />
+      <Field Name="Resources" Hidden="true" />
+      <Method Name="TryQueryComponentInner" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>MAAAAAAAMAAAAMQAABAAMAAgAAgABIAABIAACAAFAAI=</HashCode>
+      <FileName>GameEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.ResourceHandle">
+    <Position X="7.5" Y="7" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQIAAgAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResourceHandle.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.RegistrationContext&lt;TState&gt;">
+    <Position X="10.25" Y="0.5" Width="2" />
+    <Members>
+      <Field Name="currentState" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAiAAAAAAAABAAACAAAAAAAA=</HashCode>
+      <FileName>RegistrationContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="GameUtils.IResource">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResource.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GameUtils.IBufferedState&lt;TSelf&gt;">
+    <Position X="5.75" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IBufferedState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GameUtils.IEngineComponent">
+    <Position X="3.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>IEngineComponent.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

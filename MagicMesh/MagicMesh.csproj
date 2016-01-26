@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2EBEEDC9-F81B-4544-9328-EA1C4585B348}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MagicMesh</RootNamespace>
+    <AssemblyName>MagicMesh</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\..\SharpDX-SDK-2.6.0\Bin\DirectX11_2-net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1">
+      <HintPath>..\..\..\..\SharpDX-SDK-2.6.0\Bin\DirectX11_2-net40\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\..\..\..\SharpDX-SDK-2.6.0\Bin\DirectX11_2-net40\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\..\..\SharpDX-SDK-2.6.0\Bin\DirectX11_2-net40\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="ArcMode.cs" />
+    <Compile Include="BezierMode.cs" />
+    <Compile Include="ConfirmDialog.xaml.cs">
+      <DependentUpon>ConfirmDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConfirmDialogViewModel.cs" />
+    <Compile Include="ConfirmResult.cs" />
+    <Compile Include="CursorMode.cs" />
+    <Compile Include="EditorMode.cs" />
+    <Compile Include="LineMode.cs" />
+    <Compile Include="PercentageConverter.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="RenderPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SplineMode.cs" />
+    <Page Include="ConfirmDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GeometryFigure.cs" />
+    <Compile Include="GeometrySection.cs" />
+    <Compile Include="InverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MeshEditor.cs" />
+    <Compile Include="MultiplyConverter.cs" />
+    <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NewFile_6276.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Open_6529.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Save_6530.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Undo_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Redo_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Cut_6523.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Copy_6524.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Paste_6520.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ExportReportData_10565.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Maximize.png" />
+    <Resource Include="Images\Restore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Minimize_Menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Close_Menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Maximize_Menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Restore_Menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Cursors\grab.cur" />
+    <None Include="Cursors\grabbing.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Line tool.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Bezier tool.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Cursor.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Spline tool.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Arc tool.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

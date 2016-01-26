@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameUtils.Collections.BufferedCollection&lt;T&gt;">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <Members>
+      <Field Name="bufferedChanges" Hidden="true" />
+      <Field Name="list" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="GameUtils.Collections.BufferedCollection&lt;T&gt;.BufferedChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedCollection.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedCollection&lt;T&gt;.AddChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedCollection.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedCollection&lt;T&gt;.RemoveChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedCollection.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedCollection&lt;T&gt;.ClearChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedCollection.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ACISggAAAAAAQBAQCQAABASAAAAAhAIAAAAAAABQIAE=</HashCode>
+      <FileName>Collections\BufferedCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.Collections.ItemEventArgs&lt;T&gt;">
+    <Position X="5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Collections\ItemEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.Collections.BufferedLinkedList&lt;T&gt;">
+    <Position X="2.75" Y="0.5" Width="2" />
+    <Members>
+      <Field Name="bufferedChanges" Hidden="true" />
+      <Field Name="list" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="GameUtils.Collections.BufferedLinkedList&lt;T&gt;.BufferedChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedLinkedList.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedLinkedList&lt;T&gt;.AddChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedLinkedList.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedLinkedList&lt;T&gt;.RemoveChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedLinkedList.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="GameUtils.Collections.BufferedLinkedList&lt;T&gt;.ClearChange&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Collections\BufferedLinkedList.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ACISggAAAAAAQBAQAQAABASAAAAAhAIAAAAAAABQIAE=</HashCode>
+      <FileName>Collections\BufferedLinkedList.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameUtils.Graphics.Renderer">
+    <Position X="0.5" Y="0.5" Width="3.25" />
+    <Members>
+      <Method Name="BeginRender" Hidden="true" />
+      <Field Name="device" Hidden="true" />
+      <Field Name="deviceContext" Hidden="true" />
+      <Method Name="EndRender" Hidden="true" />
+      <Method Name="IEngineComponent.IsCompatibleTo" Hidden="true" />
+      <Property Name="IEngineComponent.Tag" Hidden="true" />
+      <Field Name="renderTarget" Hidden="true" />
+      <Field Name="resized" Hidden="true" />
+      <Field Name="swapChain" Hidden="true" />
+      <Field Name="window" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Struct Name="GameUtils.Graphics.Renderer.MatrixBuffer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Graphics\Renderer_Layer0.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gIAQAEADCKAgAAAQEgCABgUEgDAEAQAJAwIAAAAECAk=</HashCode>
+      <FileName>Graphics\Renderer_Layer0.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.Graphics.Texture">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAABCEgAAAAAAAAAEAAAAAAAgAACEACCAAACAA=</HashCode>
+      <FileName>Graphics\Texture.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.Graphics.Brush">
+    <Position X="8.5" Y="0.75" Width="2" />
+    <Members>
+      <Method Name="~Brush" Hidden="true" />
+      <Method Name="ApplyChanges" Hidden="true" />
+      <Method Name="Brush" Hidden="true" />
+      <Method Name="CreateBuffer" Hidden="true" />
+      <Field Name="currentOpacity" Hidden="true" />
+      <Field Name="currentTag" Hidden="true" />
+      <Field Name="currentTransform" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Method Name="FillBuffer" Hidden="true" />
+      <Field Name="handle" Hidden="true" />
+      <Method Name="IResource.ApplyChanges" Hidden="true" />
+      <Field Name="newOpacity" Hidden="true" />
+      <Field Name="newTag" Hidden="true" />
+      <Field Name="newTransform" Hidden="true" />
+      <Method Name="UpdateVertices" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAZQEAAAECAoAAAAAAgAIASAAAAAAABAAAACAAAAABA=</HashCode>
+      <FileName>Graphics\Brush.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameUtils.Graphics.SolidColorBrush">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <Members>
+      <Method Name="ApplyChanges" Hidden="true" />
+      <Field Name="currentColor" Hidden="true" />
+      <Method Name="FillBuffer" Hidden="true" />
+      <Field Name="newColor" Hidden="true" />
+      <Method Name="SolidColorBrush" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAACAgAAAAAAAAAAAgQAAAAA=</HashCode>
+      <FileName>Graphics\SolidColorBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.Graphics.LinearGradientBrush">
+    <Position X="9.5" Y="3.5" Width="1.75" />
+    <Members>
+      <Method Name="ApplyChanges" Hidden="true" />
+      <Field Name="currentEndPoint" Hidden="true" />
+      <Field Name="currentGradientStops" Hidden="true" />
+      <Field Name="currentStartPoint" Hidden="true" />
+      <Method Name="FillBuffer" Hidden="true" />
+      <Method Name="LinearGradientBrush" Hidden="true" />
+      <Field Name="newEndPoint" Hidden="true" />
+      <Field Name="newGradientStops" Hidden="true" />
+      <Field Name="newStartPoint" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAIQAAAAIYAAAAAAAAACAAIAEAEAAAAAAAQAAAAg=</HashCode>
+      <FileName>Graphics\LinearGradientBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.Graphics.TextureBrush">
+    <Position X="13.5" Y="3.5" Width="1.5" />
+    <Members>
+      <Method Name="ApplyChanges" Hidden="true" />
+      <Field Name="currentTexture" Hidden="true" />
+      <Field Name="currentWrapMode" Hidden="true" />
+      <Field Name="disposeTexture" Hidden="true" />
+      <Method Name="FillBuffer" Hidden="true" />
+      <Field Name="newTexture" Hidden="true" />
+      <Field Name="newWrapMode" Hidden="true" />
+      <Method Name="TextureBrush" Hidden="true" />
+      <Method Name="UpdateVertices" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQQAEQAAAAIAAAAEgAAEACAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Graphics\TextureBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUtils.Graphics.RadialGradientBrush">
+    <Position X="11.5" Y="3.5" Width="1.75" />
+    <Members>
+      <Method Name="FillBuffer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAABIAAAAAAAAGACAAIAENAAYAkAAAQAIAAA=</HashCode>
+      <FileName>Graphics\RadialGradientBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="GameUtils.Graphics.GradientStop">
+    <Position X="11" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Graphics\GradientStop.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="GameUtils.Graphics.WrapMode">
+    <Position X="13" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAARAAgAAAwAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Graphics\WrapMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

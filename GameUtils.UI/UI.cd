@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Artentus.GameUtils.UI.KeyboardEventArgs">
+    <Position X="2.75" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAQAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>KeyboardEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.UIRoot">
+    <Position X="3.25" Y="1" Width="1.75" />
+    <Members>
+      <Field Name="clickedElement" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Field Name="factory" Hidden="true" />
+      <Field Name="focusedElement" Hidden="true" />
+      <Method Name="GetAbsoluteLocationInner" Hidden="true" />
+      <Method Name="GetAbsoluteSizeInner" Hidden="true" />
+      <Method Name="GetFactoryInner" Hidden="true" />
+      <Method Name="GetFocusedElement" Hidden="true" />
+      <Method Name="GetLocationInner" Hidden="true" />
+      <Method Name="GetSizeInner" Hidden="true" />
+      <Method Name="IInputListener&lt;KeyboardState&gt;.OnInputReceived" Hidden="true" />
+      <Method Name="IInputListener&lt;MouseState&gt;.OnInputReceived" Hidden="true" />
+      <Method Name="IStateRenderer.FactoryChanged" Hidden="true" />
+      <Method Name="IStateRenderer.Render" Hidden="true" />
+      <Field Name="keyboardHandle" Hidden="true" />
+      <Field Name="mouseElement" Hidden="true" />
+      <Field Name="mouseHandle" Hidden="true" />
+      <Field Name="mousePos" Hidden="true" />
+      <Field Name="oldMouseState" Hidden="true" />
+      <Field Name="pressedKeys" Hidden="true" />
+      <Method Name="SetFocusedElement" Hidden="true" />
+      <Method Name="SetLocationInner" Hidden="true" />
+      <Method Name="SetSizeInner" Hidden="true" />
+      <Field Name="surface" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AQQKIoAAAnBgAAAACgQEMAAgBAAABAAARAAAAAGAAAA=</HashCode>
+      <FileName>UIRoot.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.PaintEventArgs">
+    <Position X="5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAgA=</HashCode>
+      <FileName>PaintEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.MouseEventArgs">
+    <Position X="5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>MouseEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.UIElement">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <Members>
+      <Method Name="~UIElement" Hidden="true" />
+      <Field Name="disposed" Hidden="true" />
+      <Field Name="focused" Hidden="true" />
+      <Method Name="GetAbsoluteLocationInner" Hidden="true" />
+      <Method Name="GetAbsoluteSizeInner" Hidden="true" />
+      <Method Name="GetChildAtPointInner" Hidden="true" />
+      <Method Name="GetFactoryInner" Hidden="true" />
+      <Method Name="GetFocusedElement" Hidden="true" />
+      <Method Name="GetLocationInner" Hidden="true" />
+      <Method Name="GetSizeInner" Hidden="true" />
+      <Method Name="GetSurfaceLocationInner" Hidden="true" />
+      <Field Name="location" Hidden="true" />
+      <Method Name="OnApplyChanges" Hidden="true" />
+      <Field Name="parent" Hidden="true" />
+      <Method Name="SetFocusedElement" Hidden="true" />
+      <Method Name="SetFocusInner" Hidden="true" />
+      <Method Name="SetLocationInner" Hidden="true" />
+      <Method Name="SetSizeInner" Hidden="true" />
+      <Field Name="size" Hidden="true" />
+      <Field Name="visible" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ICLAYgCIAnDYhGLES4pAUCRyABIAFCAIJIIACAKKCgA=</HashCode>
+      <FileName>UIElement.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.FactoryChangedEventArgs">
+    <Position X="2.75" Y="8.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FactoryChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Artentus.GameUtils.UI.ContainerElement">
+    <Position X="3.25" Y="3.75" Width="1.75" />
+    <Members>
+      <Method Name="ContainerElement" Hidden="true" />
+      <Method Name="GetChildAtPointInner" Hidden="true" />
+      <Method Name="OnAbsoluteBoundsChanged" Hidden="true" />
+      <Method Name="OnApplyChanges" Hidden="true" />
+      <Method Name="OnFactoryChanged" Hidden="true" />
+      <Method Name="OnPaint" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AACAQAAAAAAABAAAAQAEAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>ContainerElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
