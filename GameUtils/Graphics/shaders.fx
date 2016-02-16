@@ -44,8 +44,6 @@ VS_Output VS(Vector4 position : POSITION, Vector2 textureCoordinates : TEXTCOORD
 }
 
 
-
-
 /*
 	Pixel Shader
 */
@@ -197,7 +195,7 @@ Color GetRadialGradientPixel(Vector2 input)
 
 Color GetTextureBrushPixel(Vector2 coordinates)
 {
-	return CurrentTexture.Sample(CurrentState, coordinates);
+	return CurrentTexture.Sample(CurrentState, coordinates) * GradientColors[0];
 }
 
 Color GetPixel(PS_Input input)
@@ -228,9 +226,9 @@ Color GetPixel(PS_Input input)
 		Vector2 p = input.BezierCoordinates;
 
 		float2 px = ddx(p);
-			float2 py = ddy(p);
+		float2 py = ddy(p);
 
-			float fx = (2 * p.x)*px.x - px.y;
+	    float fx = (2 * p.x)*px.x - px.y;
 		float fy = (2 * p.x)*py.x - py.y;
 
 		float sd = (p.x*p.x - p.y) / sqrt(fx*fx + fy*fy);
@@ -243,7 +241,6 @@ Color GetPixel(PS_Input input)
 		else if (alpha < 1)
 			pixelColor.a *= alpha;
 	}
-	
 
 	pixelColor.a *= Opacity;
 	return pixelColor;

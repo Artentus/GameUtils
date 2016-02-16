@@ -11,6 +11,7 @@ namespace GameUtils.Graphics
     {
         readonly bool disableCloseButton;
         bool fullscreen;
+        volatile float dpi;
         FormBorderStyle oldBorderStyle;
         FormWindowState oldWindowState;
         Rectangle oldBounds;
@@ -19,6 +20,11 @@ namespace GameUtils.Graphics
         /// Is risen when the fullscreen mode has changed.
         /// </summary>
         public event EventHandler FullscreenChanged;
+
+        /// <summary>
+        /// Is risen when the DPI have changed.
+        /// </summary>
+        public event EventHandler DpiChanged;
 
         protected override CreateParams CreateParams
         {
@@ -51,15 +57,29 @@ namespace GameUtils.Graphics
             }
         }
 
+        /// <summary>
+        /// The DPI of the window.
+        /// The default value is 96.
+        /// </summary>
+        public float Dpi
+        {
+            get { return dpi; }
+            set
+            {
+                if (value != dpi)
+                {
+                    dpi = value;
+                    OnDpiChanged(EventArgs.Empty);
+                }
+            }
+        }
+
         bool IEngineComponent.IsCompatibleTo(IEngineComponent component)
         {
             return true;
         }
 
-        /// <summary>
-        /// Retrieves the Bounds of this window.
-        /// </summary>
-        public new Math.Rectangle Bounds
+        Math.Rectangle ISurface.Bounds
         {
             get
             {
@@ -69,10 +89,7 @@ namespace GameUtils.Graphics
             }
         }
 
-        object ISurface.OutputTarget
-        {
-            get { return this; }
-        }
+        object ISurface.OutputTarget => this;
 
         protected GameWindowBase(bool fullscreen = false, bool disableCloseButton = true)
         {
@@ -80,6 +97,7 @@ namespace GameUtils.Graphics
             UpdateStyles();
 
             this.fullscreen = fullscreen;
+            this.dpi = 96;
             this.disableCloseButton = disableCloseButton;
             if (fullscreen)
             {
@@ -111,8 +129,12 @@ namespace GameUtils.Graphics
                 DesktopBounds = oldBounds;
             }
 
-            if (FullscreenChanged != null)
-                FullscreenChanged(this, e);
+            FullscreenChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnDpiChanged(EventArgs e)
+        {
+            DpiChanged?.Invoke(this, e);
         }
 
         protected override void OnPaint(PaintEventArgs e)

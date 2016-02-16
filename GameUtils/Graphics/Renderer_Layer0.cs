@@ -270,11 +270,15 @@ namespace GameUtils.Graphics
             }
         }
 
-        unsafe void SetTexture(Texture texture, float opacity)
+        unsafe void SetTexture(Texture texture, Color4 color, float opacity)
         {
             SetTextureInner(texture.ResourceView);
 
-            var buffer = new BrushBuffer() { Type = 4, Opacity = opacity };
+            var buffer = new BrushBuffer() { Type = 4, Opacity = opacity};
+            buffer.GradientColors[0] = color.R;
+            buffer.GradientColors[1] = color.G;
+            buffer.GradientColors[2] = color.B;
+            buffer.GradientColors[3] = color.A;
             deviceContext.UpdateSubresource(brushBuffer, 0, null, (IntPtr)(&buffer), 0, 0);
             deviceContext.PixelShader.SetConstantBuffer(1, brushBuffer);
         }
@@ -365,68 +369,67 @@ namespace GameUtils.Graphics
             return new D3D11.ShaderResourceView(device, (D3D11.Texture2D)texture);
         }
 
-        
+        object IEngineComponent.Tag => null;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        object IEngineComponent.Tag
-        {
-            get { return null; }
-        }
         bool IEngineComponent.IsCompatibleTo(IEngineComponent component)
         {
             return !(component is Renderer);
         }
+        private bool disposed;
 
         public void Dispose()
         {
-            
+            if (!disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+
+                disposed = true;
+            }
+        }
+
+        void Dispose(bool disposing)
+        {
+            depthStencilView?.Dispose();
+            depthStencilBuffer?.Dispose();
+            surfaceTarget?.Dispose();
+            surfaceView?.Dispose();
+            surfaceTexture?.Dispose();
+
+            swapChain.Dispose();
+
+            defaultDepthStencilState.Dispose();
+            clipDepthStencilState.Dispose();
+            clippingDepthStencilState.Dispose();
+
+            blendState.Dispose();
+            samplerState.Dispose();
+
+            for (int i = 0; i < BufferCount; i++)
+            {
+                indexBuffers[i].Dispose();
+                vertexBuffers[i].Dispose();
+            }
+            matrixBuffer.Dispose();
+            brushBuffer.Dispose();
+
+            vertexShader.Dispose();
+            pixelShader.Dispose();
+
+            tkDevice.Dispose();
+            device.Dispose();
+
+            if (disposing)
+            {
+                indexBuffers = null;
+                vertexBuffers = null;
+                sw = null;
+            }
+        }
+
+        ~Renderer()
+        {
+            Dispose(false);
         }
     }
 }

@@ -87,21 +87,22 @@ namespace GameUtils.Graphics
         public float Dpi => surface.Dpi;
 
         /// <summary>
-        /// Draws a texture.
+        /// Draws a colored texture.
         /// </summary>
         /// <param name="texture">The texture.</param>
+        /// <param name="color">The color of the texture.</param>
         /// <param name="destinationRectangle">The rectangle the texture will be displayed in.</param>
         /// <param name="sourceRectangle">The rectangle defining the part of the texture that will be displayed.</param>
         /// <param name="opacity">The opacity of the drawn texture.</param>
         /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
         /// <exception cref="System.ArgumentOutOfRangeException">The source rectangle lies not inside the textures bounds.</exception>
-        public void DrawTexture(Texture texture, Rectangle destinationRectangle, Rectangle sourceRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
+        public void DrawTexture(Texture texture, Color4 color, Rectangle destinationRectangle, Rectangle sourceRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
         {
             if (sourceRectangle.Left < 0 || sourceRectangle.Top < 0 ||
                 sourceRectangle.Right > texture.Width || sourceRectangle.Bottom > texture.Height)
                 throw new ArgumentOutOfRangeException(nameof(sourceRectangle));
 
-            SetTexture(texture, opacity);
+            SetTexture(texture, color, opacity);
             SetSamplerState(currentWrapMode, interpolationMode == InterpolationMode.Default ? defaultInterpolationMode : interpolationMode);
 
             float textCoordLeft = sourceRectangle.Left / texture.Width;
@@ -122,15 +123,16 @@ namespace GameUtils.Graphics
         }
 
         /// <summary>
-        /// Draws a texture.
+        /// Draws a colored texture.
         /// </summary>
         /// <param name="texture">The texture.</param>
+        /// <param name="color">The color of the texture.</param>
         /// <param name="destinationRectangle">The rectangle the texture will be displayed in.</param>
         /// <param name="opacity">The opacity of the drawn texture.</param>
         /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
-        public void DrawTexture(Texture texture, Rectangle destinationRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
+        public void DrawTexture(Texture texture, Color4 color, Rectangle destinationRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
         {
-            SetTexture(texture, opacity);
+            SetTexture(texture, color, opacity);
             SetSamplerState(currentWrapMode, interpolationMode == InterpolationMode.Default ? defaultInterpolationMode : interpolationMode);
 
             Vertex[] vertices = new[]
@@ -146,6 +148,45 @@ namespace GameUtils.Graphics
         }
 
         /// <summary>
+        /// Draws a colored texture.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        /// <param name="color">The color of the texture.</param>
+        /// <param name="location">The loction the texture will be displayed at.</param>
+        /// <param name="opacity">The opacity of the drawn texture.</param>
+        /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
+        public void DrawTexture(Texture texture, Color4 color, Vector2 location, float opacity = 1, InterpolationMode interpolationMode = InterpolationMode.Default)
+        {
+            DrawTexture(texture, color, new Rectangle(location.X, location.Y, texture.Width, texture.Height), opacity, interpolationMode);
+        }
+
+        /// <summary>
+        /// Draws a texture.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        /// <param name="destinationRectangle">The rectangle the texture will be displayed in.</param>
+        /// <param name="sourceRectangle">The rectangle defining the part of the texture that will be displayed.</param>
+        /// <param name="opacity">The opacity of the drawn texture.</param>
+        /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">The source rectangle lies not inside the textures bounds.</exception>
+        public void DrawTexture(Texture texture, Rectangle destinationRectangle, Rectangle sourceRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
+        {
+            DrawTexture(texture, Color4.White, destinationRectangle, sourceRectangle, opacity, interpolationMode);
+        }
+
+        /// <summary>
+        /// Draws a texture.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        /// <param name="destinationRectangle">The rectangle the texture will be displayed in.</param>
+        /// <param name="opacity">The opacity of the drawn texture.</param>
+        /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
+        public void DrawTexture(Texture texture, Rectangle destinationRectangle, float opacity = 1f, InterpolationMode interpolationMode = InterpolationMode.Default)
+        {
+            DrawTexture(texture, Color4.White, destinationRectangle, opacity, interpolationMode);
+        }
+
+        /// <summary>
         /// Draws a texture.
         /// </summary>
         /// <param name="texture">The texture.</param>
@@ -154,7 +195,7 @@ namespace GameUtils.Graphics
         /// <param name="interpolationMode">The interpolation mode used to stretch the texture.</param>
         public void DrawTexture(Texture texture, Vector2 location, float opacity = 1, InterpolationMode interpolationMode = InterpolationMode.Default)
         {
-            DrawTexture(texture, new Rectangle(location.X, location.Y, texture.Width, texture.Height), opacity, interpolationMode);
+            DrawTexture(texture, Color4.White, new Rectangle(location.X, location.Y, texture.Width, texture.Height), opacity, interpolationMode);
         }
 
         /// <summary>
@@ -168,10 +209,10 @@ namespace GameUtils.Graphics
 
             Vertex[] vertices = new[]
             {
-                new Vertex(rectangle.Left, rectangle.Top) {BezierCoordinates = new SharpDX.Vector2(0.5f,0)},
-                new Vertex(rectangle.Right, rectangle.Top) {BezierCoordinates = new SharpDX.Vector2(0,0)},
-                new Vertex(rectangle.Left, rectangle.Bottom) {BezierCoordinates = new SharpDX.Vector2(1,1)},
-                new Vertex(rectangle.Right, rectangle.Bottom) {BezierCoordinates = new SharpDX.Vector2(0.5f,0)},
+                new Vertex(rectangle.Left, rectangle.Top),
+                new Vertex(rectangle.Right, rectangle.Top),
+                new Vertex(rectangle.Left, rectangle.Bottom),
+                new Vertex(rectangle.Right, rectangle.Bottom),
             };
             int[] indices = { 0, 1, 2, 1, 2, 3 };
 
@@ -185,12 +226,8 @@ namespace GameUtils.Graphics
         /// <param name="indices">The index buffer.</param>
         /// <param name="vertices">The vertex buffer.</param>
         /// <param name="brush">The brush used to fill the triangles.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">The length of the index array exceeds <see cref="Renderer.IndexBufferSize"/> or the length of the vertex array exceeds <see cref="Renderer.VertexBufferSize"/>.</exception>
         public void FillTriangleList(int[] indices, Vector2[] vertices, Brush brush)
         {
-            //if (indices.Length > IndexBufferSize) throw new ArgumentOutOfRangeException("indices");
-            //if (vertices.Length > VertexBufferSize) throw new ArgumentOutOfRangeException("vertices");
-
             SetBrush(brush);
 
             var realVertices = new Vertex[vertices.Length];
@@ -286,12 +323,8 @@ namespace GameUtils.Graphics
         /// <param name="vertices">The vertex buffer.</param>
         /// <param name="reset">Optional. If set to true the old clipping region is discarded, otherweise the new region adds to the old one.</param>
         /// <remarks>The clipping region is reset automatically before every render cycle.</remarks>
-        /// <exception cref="System.ArgumentOutOfRangeException">The length of the index array exceeds <see cref="Renderer.IndexBufferSize"/> or the length of the vertex array exceeds <see cref="Renderer.VertexBufferSize"/>.</exception>
         public void SetClip(int[] indices, Vector2[] vertices, bool reset = true)
         {
-            //if (indices.Length > IndexBufferSize) throw new ArgumentOutOfRangeException("indices");
-            //if (vertices.Length > VertexBufferSize) throw new ArgumentOutOfRangeException("vertices");
-
             SetBrushBuffer(ClipBrush);
 
             if (reset) ResetClip();

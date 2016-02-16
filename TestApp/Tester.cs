@@ -22,10 +22,10 @@ namespace TestApp
                 if (state.Brush1.IsReady && state.Brush2.IsReady)
                 {
                     //renderer.SetClip(new Rectangle(100, 100, 1720, 880));
-                    //renderer.FillRectangle(renderer.SurfaceBounds, state.Brush1);
+                    renderer.FillRectangle(renderer.SurfaceBounds, state.Brush1);
                     //renderer.FillRectangle(renderer.SurfaceBounds, state.Brush2);
-                    renderer.DrawText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\nsed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,\nsed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\nLorem ipsum dolor sit amet, consetetur sadipscing elitr,\nsed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,\nsed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-                        new Vector2(10, 10), state.Font, 24, state.Brush2);
+                    //renderer.DrawText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\nsed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,\nsed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\nLorem ipsum dolor sit amet, consetetur sadipscing elitr,\nsed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,\nsed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                    //    new Vector2(10, 10), state.Font, 24, state.Brush2);
                     //renderer.DrawText("!", new Vector2(100, 100), state.Font, 14, state.Brush2);
                     //renderer.FillRectangle(new Rectangle(100, 100, 1000, 1), state.Brush2);
 
@@ -66,11 +66,11 @@ namespace TestApp
                         Brush1 = oldState.Brush1;
                     else
                     {
-                        //Brush1 = new TextureBrush(@"D:\Mathis\Bilder\Penrose_triangle_outline.png", true);
-                        //((TextureBrush)Brush1).WrapMode = WrapMode.Tile;
+                        Brush1 = new TextureBrush(@"D:\Mathis\Bilder\Penrose_triangle_outline.png", true);
+                        ((TextureBrush)Brush1).WrapMode = WrapMode.Tile;
                         //Brush.Transform = Matrix2x3.Rotation(0.25f); //Matrix2x3.Scaling(2);
 
-                        Brush1 = new SolidColorBrush(Color4.White);
+                        //Brush1 = new SolidColorBrush(Color4.White);
                     }
                 }
 
@@ -104,13 +104,13 @@ namespace TestApp
                     //((RadialGradientBrush)Brush2).Angle += 0.05f;
                 }
 
-                if (Font == null)
-                {
-                    if (oldState.Font != null)
-                        Font = oldState.Font;
-                    else
-                        Font = new Font(@"D:\Mathis\Dokumente\Visual Studio 2013\Projects\GameUtils\FontConverter\bin\Debug\Consolas.guf");
-                }
+                //if (Font == null)
+                //{
+                //    if (oldState.Font != null)
+                //        Font = oldState.Font;
+                //    else
+                //        Font = new Font(@"D:\Mathis\Dokumente\Visual Studio 2013\Projects\GameUtils\FontConverter\bin\Debug\Consolas.guf");
+                //}
 
                 //if (Geometry == null)
                 //{

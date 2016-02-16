@@ -11,6 +11,9 @@ namespace GameUtils.Graphics
         Texture currentTexture;
         Texture newTexture;
 
+        Color4 currentColor;
+        Color4 newColor;
+
         WrapMode currentWrapMode;
         WrapMode newWrapMode;
 
@@ -21,6 +24,12 @@ namespace GameUtils.Graphics
         {
             get { return currentTexture; }
             set { newTexture = value; }
+        }
+
+        public Color4 Color
+        {
+            get { return currentColor; }
+            set { newColor = value; }
         }
 
         public WrapMode WrapMode
@@ -40,9 +49,16 @@ namespace GameUtils.Graphics
             get { return currentTexture.IsReady; }
         }
 
-        internal override void FillBuffer(ref BrushBuffer buffer)
+        internal override unsafe void FillBuffer(ref BrushBuffer buffer)
         {
             buffer.Type = 4;
+            fixed (float* colors = buffer.GradientColors)
+            {
+                colors[0] = Color.R;
+                colors[1] = Color.G;
+                colors[2] = Color.B;
+                colors[3] = Color.A;
+            }
         }
 
         internal override void UpdateVertices(Vertex[] vertices)
@@ -69,6 +85,7 @@ namespace GameUtils.Graphics
                 currentTexture = newTexture;
                 disposeTexture = false;
             }
+            currentColor = newColor;
             currentWrapMode = newWrapMode;
             currentInterpolationMode = newInterpolationMode;
         }
@@ -79,7 +96,12 @@ namespace GameUtils.Graphics
 
             currentTexture = texture;
             newTexture = texture;
+
+            currentColor = Color4.White;
+            newColor = currentColor;
+
             currentInterpolationMode = InterpolationMode.Default;
+            newInterpolationMode = currentInterpolationMode;
         }
 
         public TextureBrush(string fileName, bool loadAsync = false)
@@ -88,7 +110,12 @@ namespace GameUtils.Graphics
 
             currentTexture = new Texture(fileName, loadAsync);
             newTexture = currentTexture;
+
+            currentColor = Color4.White;
+            newColor = currentColor;
+
             currentInterpolationMode = InterpolationMode.Default;
+            newInterpolationMode = currentInterpolationMode;
         }
 
         public TextureBrush(Stream stream, bool loadAsync = false)
@@ -97,7 +124,12 @@ namespace GameUtils.Graphics
 
             currentTexture = new Texture(stream, loadAsync);
             newTexture = currentTexture;
+
+            currentColor = Color4.White;
+            newColor = currentColor;
+
             currentInterpolationMode = InterpolationMode.Default;
+            newInterpolationMode = currentInterpolationMode;
         }
     }
 }
