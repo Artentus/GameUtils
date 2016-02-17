@@ -1,78 +1,70 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using GameUtils.Math;
 
 namespace GameUtils.Graphics
 {
-    public abstract class Brush : IResource
+    public abstract class Brush : IGraphicsResource
     {
+        [StructLayout(LayoutKind.Explicit)]
+        protected internal unsafe struct BrushBuffer
+        {
+            [FieldOffset(0)] public int Type;
+            [FieldOffset(4)] public float Opacity;
+            [FieldOffset(8)] public SharpDX.Vector2 Point1;
+            [FieldOffset(16)] public SharpDX.Vector2 Point2;
+            [FieldOffset(32)] public fixed float Matrix[21];
+            [FieldOffset(116)] public int ColorCount;
+            [FieldOffset(128)] public fixed float GradientColors[64];
+            [FieldOffset(384)] public fixed float GradientPositions[64];
+        }
+
         public const int MaximumGradientColorCount = 16;
 
-        readonly ResourceHandle handle;
-
-        object currentTag;
-        object newTag;
-
-        float currentOpacity;
-        float newOpacity;
-
-        Matrix2x3 currentTransform;
-        Matrix2x3 newTransform;
-
-        public object Tag
-        {
-            get { return currentTag; }
-            set { newTag = value; }
-        }
-
-        public virtual bool IsReady
-        {
-            get { return true; }
-        }
+        float opacity;
 
         public float Opacity
         {
-            get { return currentOpacity; }
-            set { newOpacity = MathHelper.Clamp(value, 0f, 1f); }
+            get { return opacity; }
+            set { opacity = MathHelper.Clamp(value, 0f, 1f); }
         }
 
-        public Matrix2x3 Transform
+        public Matrix2x3 Transform { get; set; }
+
+        public abstract bool IsAsync { get; }
+
+        public abstract bool IsReady { get; }
+
+        protected Brush()
         {
-            get { return currentTransform; }
-            set { newTransform = value; }
+            opacity = 1f;
+            Transform = Matrix2x3.Identity;
         }
 
-        internal Brush()
-        {
-            currentOpacity = 1f;
-            newOpacity = 1f;
-            currentTransform = Matrix2x3.Identity;
-            newTransform = Matrix2x3.Identity;
-
-            handle = GameEngine.RegisterResource(this);
-        }
-
-        internal abstract void FillBuffer(ref BrushBuffer buffer);
+        protected abstract void FillBuffer(ref BrushBuffer buffer);
 
         internal BrushBuffer CreateBuffer()
         {
-            var buffer = new BrushBuffer { Opacity = currentOpacity };
+            var buffer = new BrushBuffer { Opacity = opacity };
             FillBuffer(ref buffer);
             return buffer;
         }
 
-        internal virtual void UpdateVertices(Vertex[] vertices)
-        { }
-
-        void IResource.ApplyChanges()
+        protected virtual Math.Vector2 GetTexturePosition(Math.Vector2 vertex, Matrix2x3 inverseTransform)
         {
-            ApplyChanges();
+            return Math.Vector2.Zero;
         }
 
-        protected virtual void ApplyChanges()
+        internal void UpdateVertices(Vertex[] vertices)
         {
-            currentTag = newTag;
-            currentOpacity = newOpacity;
-            currentTransform = newTransform;
+            Matrix2x3 inverseTransform = Transform.Invert();
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                SharpDX.Vector4 vertexPos = vertices[i].Position;
+                Math.Vector2 texturePos = GetTexturePosition(new Math.Vector2(vertexPos.X, vertexPos.Y), inverseTransform);
+                vertices[i].TexturePosition = new SharpDX.Vector2(texturePos.X, texturePos.Y);
+            }
         }
 
         private bool disposed;
@@ -89,24 +81,11 @@ namespace GameUtils.Graphics
         }
 
         protected virtual void Dispose(bool disposing)
-        {
-            handle.Dispose();
-        }
+        { }
 
         ~Brush()
         {
             Dispose(false);
-        }
-
-        UpdateMode IResource.UpdateMode
-        {
-            get { return UpdateMode.Synchronous; }
-        }
-
-        bool IResource.IsReady
-        {
-            get { return IsReady; }
-            set { }
         }
     }
 }

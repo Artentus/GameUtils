@@ -1,55 +1,56 @@
 ﻿using System.IO;
 using GameUtils.Math;
-using Vector2 = SharpDX.Vector2;
 
 namespace GameUtils.Graphics
 {
     public sealed class TextureBrush : Brush
     {
-        bool disposeTexture;
+        readonly bool disposeTexture;
+        readonly Texture texture;
 
-        Texture currentTexture;
-        Texture newTexture;
+        public override bool IsAsync { get; }
 
-        Color4 currentColor;
-        Color4 newColor;
+        public override bool IsReady => texture.IsReady;
 
-        WrapMode currentWrapMode;
-        WrapMode newWrapMode;
+        public Texture Texture => texture;
 
-        InterpolationMode currentInterpolationMode;
-        InterpolationMode newInterpolationMode;
+        public Color4 Color { get; set; }
 
-        public Texture Texture
+        public WrapMode WrapMode { get; set; }
+
+        public InterpolationMode InterpolationMode { get; set; }
+
+        public TextureBrush(Texture texture)
         {
-            get { return currentTexture; }
-            set { newTexture = value; }
+            IsAsync = texture.IsAsync;
+            disposeTexture = false;
+            this.texture = texture;
+
+            Color = Color4.White;
+            InterpolationMode = InterpolationMode.Default;
         }
 
-        public Color4 Color
+        public TextureBrush(string fileName, bool loadAsync = false)
         {
-            get { return currentColor; }
-            set { newColor = value; }
+            IsAsync = loadAsync;
+            disposeTexture = true;
+            texture = new Texture(fileName, loadAsync);
+
+            Color = Color4.White;
+            InterpolationMode = InterpolationMode.Default;
         }
 
-        public WrapMode WrapMode
+        public TextureBrush(Stream stream, bool loadAsync = false)
         {
-            get { return currentWrapMode; }
-            set { newWrapMode = value; }
+            IsAsync = loadAsync;
+            disposeTexture = true;
+            texture = new Texture(stream, loadAsync);
+
+            Color = Color4.White;
+            InterpolationMode = InterpolationMode.Default;
         }
 
-        public InterpolationMode InterpolationMode
-        {
-            get { return currentInterpolationMode; }
-            set { newInterpolationMode = value; }
-        }
-
-        public override bool IsReady
-        {
-            get { return currentTexture.IsReady; }
-        }
-
-        internal override unsafe void FillBuffer(ref BrushBuffer buffer)
+        protected override unsafe void FillBuffer(ref BrushBuffer buffer)
         {
             buffer.Type = 4;
             fixed (float* colors = buffer.GradientColors)
@@ -61,75 +62,21 @@ namespace GameUtils.Graphics
             }
         }
 
-        internal override void UpdateVertices(Vertex[] vertices)
+        protected override Vector2 GetTexturePosition(Vector2 vertex, Matrix2x3 inverseTransform)
         {
-            Matrix2x3 inverseTransform = Transform.Invert();
+            if (texture == null) return Vector2.Zero;
 
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                Math.Vector2 textPos = new Math.Vector2(vertices[i].Position.X, vertices[i].Position.Y);
-                textPos = inverseTransform.ApplyTo(textPos);
-                textPos.X /= currentTexture.Width;
-                textPos.Y /= currentTexture.Height;
-                vertices[i].TexturePosition = new Vector2(textPos.X, textPos.Y);
-            }
+            Vector2 textPos = inverseTransform.ApplyTo(vertex);
+            textPos.X /= texture.Width;
+            textPos.Y /= texture.Height;
+            return textPos;
         }
 
-        protected override void ApplyChanges()
+        protected override void Dispose(bool disposing)
         {
-            base.ApplyChanges();
+            if (disposeTexture) texture.Dispose();
 
-            if (newTexture != currentTexture)
-            {
-                if (disposeTexture) currentTexture.Dispose();
-                currentTexture = newTexture;
-                disposeTexture = false;
-            }
-            currentColor = newColor;
-            currentWrapMode = newWrapMode;
-            currentInterpolationMode = newInterpolationMode;
-        }
-
-        public TextureBrush(Texture texture)
-        {
-            disposeTexture = false;
-
-            currentTexture = texture;
-            newTexture = texture;
-
-            currentColor = Color4.White;
-            newColor = currentColor;
-
-            currentInterpolationMode = InterpolationMode.Default;
-            newInterpolationMode = currentInterpolationMode;
-        }
-
-        public TextureBrush(string fileName, bool loadAsync = false)
-        {
-            disposeTexture = true;
-
-            currentTexture = new Texture(fileName, loadAsync);
-            newTexture = currentTexture;
-
-            currentColor = Color4.White;
-            newColor = currentColor;
-
-            currentInterpolationMode = InterpolationMode.Default;
-            newInterpolationMode = currentInterpolationMode;
-        }
-
-        public TextureBrush(Stream stream, bool loadAsync = false)
-        {
-            disposeTexture = true;
-
-            currentTexture = new Texture(stream, loadAsync);
-            newTexture = currentTexture;
-
-            currentColor = Color4.White;
-            newColor = currentColor;
-
-            currentInterpolationMode = InterpolationMode.Default;
-            newInterpolationMode = currentInterpolationMode;
+            base.Dispose(disposing);
         }
     }
 }

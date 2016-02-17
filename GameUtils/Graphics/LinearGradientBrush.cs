@@ -5,87 +5,65 @@ namespace GameUtils.Graphics
 {
     public sealed class LinearGradientBrush : Brush
     {
-        GradientStop[] currentGradientStops;
-        GradientStop[] newGradientStops;
+        public override bool IsAsync => false;
 
-        Vector2 currentStartPoint;
-        Vector2 newStartPoint;
+        public override bool IsReady => true;
 
-        Vector2 currentEndPoint;
-        Vector2 newEndPoint;
+        GradientStop[] gradientStops;
 
         public GradientStop[] GradientStops
         {
-            get { return currentGradientStops; }
+            get { return gradientStops; }
             set
             {
-                if (value.Length > Brush.MaximumGradientColorCount)
-                    throw new ArgumentOutOfRangeException("value");
+                if (value.Length > MaximumGradientColorCount)
+                    throw new ArgumentOutOfRangeException(nameof(value));
 
-                newGradientStops = value;
+                gradientStops = value;
             }
         }
 
-        public Vector2 StartPoint
-        {
-            get { return currentStartPoint; }
-            set { newStartPoint = value; }
-        }
+        public Vector2 StartPoint { get; set; }
 
-        public Vector2 EndPoint
-        {
-            get { return currentEndPoint; }
-            set { newEndPoint = value; }
-        }
-
-        internal override unsafe void FillBuffer(ref BrushBuffer buffer)
-        {
-            buffer.Type = 2;
-            buffer.ColorCount = GradientStops.Length;
-
-            fixed (float* colors = buffer.GradientColors)
-            {
-                fixed (float* positions = buffer.GradientPositions)
-                {
-                    for (int i = 0; i < GradientStops.Length; i++)
-                    {
-                        colors[4 * i + 0] = GradientStops[i].Color.R;
-                        colors[4 * i + 1] = GradientStops[i].Color.G;
-                        colors[4 * i + 2] = GradientStops[i].Color.B;
-                        colors[4 * i + 3] = GradientStops[i].Color.A;
-
-                        positions[i * 4] = GradientStops[i].Position;
-                    }
-                }
-            }
-
-            buffer.Point1 = Transform.ApplyTo(StartPoint).ToSharpDXVector();
-            buffer.Point2 = Transform.ApplyTo(EndPoint).ToSharpDXVector();
-        }
-
-        protected override void ApplyChanges()
-        {
-            base.ApplyChanges();
-
-            currentGradientStops = newGradientStops;
-            currentStartPoint = newStartPoint;
-            currentEndPoint = newEndPoint;
-        }
+        public Vector2 EndPoint { get; set; }
 
         public LinearGradientBrush()
         { }
 
         public LinearGradientBrush(GradientStop[] gradientStops, Vector2 startPoint, Vector2 endPoint)
         {
-            if (gradientStops.Length > Brush.MaximumGradientColorCount)
-                throw new ArgumentOutOfRangeException("gradientStops");
+            if (gradientStops.Length > MaximumGradientColorCount)
+                throw new ArgumentOutOfRangeException(nameof(gradientStops));
 
-            currentGradientStops = gradientStops;
-            newGradientStops = gradientStops;
-            currentStartPoint = startPoint;
-            newStartPoint = startPoint;
-            currentEndPoint = endPoint;
-            newEndPoint = endPoint;
+            this.gradientStops = gradientStops;
+            StartPoint = startPoint;
+            EndPoint = endPoint;
+        }
+
+        protected override unsafe void FillBuffer(ref BrushBuffer buffer)
+        {
+            buffer.Type = 2;
+
+            if (gradientStops != null && gradientStops.Length > 0)
+            {
+                buffer.ColorCount = gradientStops.Length;
+
+                fixed (float* colors = buffer.GradientColors, positions = buffer.GradientPositions)
+                {
+                    for (int i = 0; i < gradientStops.Length; i++)
+                    {
+                        colors[4 * i + 0] = gradientStops[i].Color.R;
+                        colors[4 * i + 1] = gradientStops[i].Color.G;
+                        colors[4 * i + 2] = gradientStops[i].Color.B;
+                        colors[4 * i + 3] = gradientStops[i].Color.A;
+
+                        positions[i * 4] = gradientStops[i].Position;
+                    }
+                }
+            }
+
+            buffer.Point1 = Transform.ApplyTo(StartPoint).ToSharpDXVector();
+            buffer.Point2 = Transform.ApplyTo(EndPoint).ToSharpDXVector();
         }
     }
 }

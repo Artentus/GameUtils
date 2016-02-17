@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using SharpDX;
 
 namespace GameUtils.Graphics
@@ -9,7 +10,7 @@ namespace GameUtils.Graphics
     /// <summary>
     /// A font.
     /// </summary>
-    public sealed class Font : IResource
+    public sealed class Font : IGraphicsResource
     {
         internal sealed class Glyph
         {
@@ -40,6 +41,8 @@ namespace GameUtils.Graphics
             }
         }
 
+        volatile bool isReady;
+
         /// <summary>
         /// The Name of the font.
         /// </summary>
@@ -62,7 +65,9 @@ namespace GameUtils.Graphics
 
         internal int LineGap { get; private set; }
 
-        public object Tag { get; set; }
+        public bool IsAsync { get; }
+
+        public bool IsReady => isReady;
 
         internal Glyph GetGlyph(char c)
         {
@@ -92,10 +97,7 @@ namespace GameUtils.Graphics
                 Glyphs[i] = new Glyph(reader);
         }
 
-        /// <summary>
-        /// Creates a font from a stream.
-        /// </summary>
-        public Font(Stream stream)
+        void ReadFromStream(Stream stream)
         {
             using (var reader = new BinaryReader(stream, Encoding.Unicode))
             {
@@ -106,10 +108,7 @@ namespace GameUtils.Graphics
             }
         }
 
-        /// <summary>
-        /// Creates a font from a file.
-        /// </summary>
-        public Font(string fileName)
+        void ReadFromFile(string fileName)
         {
             var file = new FileInfo(fileName);
             using (FileStream stream = file.Open(FileMode.Open))
@@ -124,17 +123,44 @@ namespace GameUtils.Graphics
             }
         }
 
-        UpdateMode IResource.UpdateMode => UpdateMode.Synchronous;
-
-        bool IResource.IsReady
+        /// <summary>
+        /// Creates a font from a stream.
+        /// </summary>
+        public Font(Stream stream, bool loadAsync = false)
         {
-            get { return true; }
-            set { }
+            IsAsync = loadAsync;
+
+            if (loadAsync)
+            {
+                Task.Run(() => ReadFromStream(stream))
+                    .ContinueWith((t) => isReady = true);
+            }
+            else
+            {
+                ReadFromStream(stream);
+                isReady = true;
+            }
         }
 
-        void IResource.ApplyChanges()
-        { }
+        /// <summary>
+        /// Creates a font from a file.
+        /// </summary>
+        public Font(string fileName, bool loadAsync = false)
+        {
+            IsAsync = loadAsync;
 
+            if (loadAsync)
+            {
+                Task.Run(() => ReadFromFile(fileName))
+                    .ContinueWith((t) => isReady = true);
+            }
+            else
+            {
+                ReadFromFile(fileName);
+                isReady = true;
+            }
+        }
+        
         bool disposed;
 
         public void Dispose()

@@ -1,96 +1,92 @@
 ﻿using System;
 using GameUtils.Math;
-using Vector2 = GameUtils.Math.Vector2;
 
 namespace GameUtils.Graphics
 {
     public sealed class RadialGradientBrush : Brush
     {
-        GradientStop[] currentGradientStops;
-        GradientStop[] newGradientStops;
+        public override bool IsAsync => false;
 
-        Vector2 currentCenter;
-        Vector2 newCenter;
+        public override bool IsReady => true;
 
-        float currentRadiusX;
-        float newRadiusX;
-
-        float currentRadiusY;
-        float newRadiusY;
-
-        float currentAngle;
-        float newAngle;
-
-        Vector2? currentFocusPoint;
-        Vector2? newFocusPoint;
+        GradientStop[] gradientStops;
+        float radiusX;
+        float radiusY;
 
         public GradientStop[] GradientStops
         {
-            get { return currentGradientStops; }
+            get { return gradientStops; }
             set
             {
-                if (value.Length > Brush.MaximumGradientColorCount)
-                    throw new ArgumentOutOfRangeException("value");
+                if (value.Length > MaximumGradientColorCount)
+                    throw new ArgumentOutOfRangeException(nameof(value));
 
-                newGradientStops = value;
+                gradientStops = value;
             }
         }
 
-        public Vector2 Center
-        {
-            get { return currentCenter; }
-            set { newCenter = value; }
-        }
+        public Vector2 Center { get; set; }
 
         public float RadiusX
         {
-            get { return currentRadiusX; }
+            get { return radiusX; }
             set
             {
-                if (value < 0) throw new ArgumentOutOfRangeException("value");
-                newRadiusX = value;
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                radiusX = value;
             }
         }
 
         public float RadiusY
         {
-            get { return currentRadiusY; }
+            get { return radiusY; }
             set
             {
-                if (value < 0) throw new ArgumentOutOfRangeException("value");
-                newRadiusY = value;
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                radiusY = value;
             }
         }
 
-        public float Angle
+        public float Angle { get; set; }
+
+        public Vector2? FocusPoint { get; set; }
+
+        public RadialGradientBrush()
+        { }
+
+        public RadialGradientBrush(GradientStop[] gradientStops, Vector2 center, float radiusX, float radiusY, float angle = 0f, Vector2? focusPoint = null)
         {
-            get { return currentAngle; }
-            set { newAngle = value; }
+            if (gradientStops.Length > MaximumGradientColorCount)
+                throw new ArgumentOutOfRangeException(nameof(gradientStops));
+            if (radiusX < 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
+            if (radiusY < 0) throw new ArgumentOutOfRangeException(nameof(radiusY));
+
+            this.gradientStops = gradientStops;
+            Center = center;
+            this.radiusX = radiusX;
+            this.radiusY = radiusY;
+            Angle = angle;
+            FocusPoint = focusPoint;
         }
 
-        public Vector2? FocusPoint
-        {
-            get { return currentFocusPoint; }
-            set { newFocusPoint = value; }
-        }
-    
-        internal override unsafe void FillBuffer(ref BrushBuffer buffer)
+        protected override unsafe void FillBuffer(ref BrushBuffer buffer)
         {
             buffer.Type = 3;
-            buffer.ColorCount = GradientStops.Length;
 
-            fixed (float* colors = buffer.GradientColors)
+            if (gradientStops != null && gradientStops.Length > 0)
             {
-                fixed (float* positions = buffer.GradientPositions)
-                {
-                    for (int i = 0; i < GradientStops.Length; i++)
-                    {
-                        colors[4 * i + 0] = GradientStops[i].Color.R;
-                        colors[4 * i + 1] = GradientStops[i].Color.G;
-                        colors[4 * i + 2] = GradientStops[i].Color.B;
-                        colors[4 * i + 3] = GradientStops[i].Color.A;
+                buffer.ColorCount = gradientStops.Length;
 
-                        positions[i * 4] = GradientStops[i].Position;
+                fixed (float* colors = buffer.GradientColors, positions = buffer.GradientPositions)
+                {
+                    for (int i = 0; i < gradientStops.Length; i++)
+                    {
+                        colors[4 * i + 0] = gradientStops[i].Color.R;
+                        colors[4 * i + 1] = gradientStops[i].Color.G;
+                        colors[4 * i + 2] = gradientStops[i].Color.B;
+                        colors[4 * i + 3] = gradientStops[i].Color.A;
+
+                        positions[i * 4] = gradientStops[i].Position;
                     }
                 }
             }
@@ -109,42 +105,6 @@ namespace GameUtils.Graphics
                 buffer.Point1 = new SharpDX.Vector2(transformedFocusPoint.X, transformedFocusPoint.Y);
                 buffer.Point2 = new SharpDX.Vector2(1, 0);
             }
-        }
-
-        protected override void ApplyChanges()
-        {
-            base.ApplyChanges();
-
-            currentGradientStops = newGradientStops;
-            currentCenter = newCenter;
-            currentRadiusX = newRadiusX;
-            currentRadiusY = newRadiusY;
-            currentAngle = newAngle;
-            currentFocusPoint = newFocusPoint;
-        }
-
-        public RadialGradientBrush()
-        { }
-
-        public RadialGradientBrush(GradientStop[] gradientStops, Vector2 center, float radiusX, float radiusY, float angle = 0f, Vector2? focusPoint = null)
-        {
-            if (gradientStops.Length > Brush.MaximumGradientColorCount)
-                throw new ArgumentOutOfRangeException("gradientStops");
-            if (radiusX < 0) throw new ArgumentOutOfRangeException("radiusX");
-            if (radiusY < 0) throw new ArgumentOutOfRangeException("radiusY");
-
-            currentGradientStops = gradientStops;
-            newGradientStops = gradientStops;
-            currentCenter = center;
-            newCenter = center;
-            currentRadiusX = radiusX;
-            newRadiusX = radiusX;
-            currentRadiusY = radiusY;
-            newRadiusY = radiusY;
-            currentAngle = angle;
-            newAngle = angle;
-            currentFocusPoint = focusPoint;
-            newFocusPoint = focusPoint;
         }
     }
 }

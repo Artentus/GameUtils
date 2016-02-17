@@ -14,7 +14,7 @@ namespace GameUtils.Graphics
     {
         Matrix2x3 transform = Matrix2x3.Identity;
         InterpolationMode defaultInterpolationMode = InterpolationMode.Linear;
-        static readonly BrushBuffer ClipBrush;
+        static readonly Brush.BrushBuffer ClipBrush;
 
         static unsafe Renderer()
         {

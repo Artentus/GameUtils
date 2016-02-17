@@ -118,7 +118,7 @@ namespace GameUtils.Graphics
             //indexBuffer = device.CreateDynamicBuffer(sizeof(int) * IndexBufferSize, D3D11.BindFlags.IndexBuffer);
             //vertexBuffer = device.CreateDynamicBuffer(sizeof(Vertex) * VertexBufferSize, D3D11.BindFlags.VertexBuffer);
             matrixBuffer = device.CreateConstantBuffer(sizeof(MatrixBuffer));
-            brushBuffer = device.CreateConstantBuffer(sizeof(BrushBuffer));
+            brushBuffer = device.CreateConstantBuffer(sizeof(Brush.BrushBuffer));
 
             deviceContext.InputAssembler.SetIndexBuffer(indexBuffer, DXGI.Format.R32_UInt, 0);
             deviceContext.InputAssembler.SetVertexBuffers(0, new D3D11.VertexBufferBinding(vertexBuffer, sizeof(Vertex), 0));
@@ -274,7 +274,7 @@ namespace GameUtils.Graphics
         {
             SetTextureInner(texture.ResourceView);
 
-            var buffer = new BrushBuffer() { Type = 4, Opacity = opacity};
+            var buffer = new Brush.BrushBuffer() { Type = 4, Opacity = opacity};
             buffer.GradientColors[0] = color.R;
             buffer.GradientColors[1] = color.G;
             buffer.GradientColors[2] = color.B;
@@ -297,7 +297,7 @@ namespace GameUtils.Graphics
             }
         }
 
-        unsafe void SetBrushBuffer(BrushBuffer buffer)
+        unsafe void SetBrushBuffer(Brush.BrushBuffer buffer)
         {
             deviceContext.UpdateSubresource(brushBuffer, 0, null, (IntPtr)(&buffer), 0, 0);
             deviceContext.PixelShader.SetConstantBuffer(1, brushBuffer);
@@ -357,16 +357,24 @@ namespace GameUtils.Graphics
             }
         }
 
-        internal D3D11.ShaderResourceView CreateTexture(string fileName, out TK.Texture2D texture)
+        internal struct TextureCreationResult
         {
-            texture = TK.Texture2D.Load(tkDevice, fileName);
-            return new D3D11.ShaderResourceView(device, (D3D11.Texture2D)texture);
+            public TK.Texture2D Texture;
+            public D3D11.ShaderResourceView ResourceView;
         }
 
-        internal D3D11.ShaderResourceView CreateTexture(Stream stream, out TK.Texture2D texture)
+        internal TextureCreationResult CreateTexture(string fileName)
         {
-            texture = TK.Texture2D.Load(tkDevice, stream);
-            return new D3D11.ShaderResourceView(device, (D3D11.Texture2D)texture);
+            TK.Texture2D texture = TK.Texture2D.Load(tkDevice, fileName);
+            var resourceView = new D3D11.ShaderResourceView(device, texture);
+            return new TextureCreationResult() { Texture = texture, ResourceView = resourceView };
+        }
+
+        internal TextureCreationResult CreateTexture(Stream stream)
+        {
+            TK.Texture2D texture = TK.Texture2D.Load(tkDevice, stream);
+            var resourceView = new D3D11.ShaderResourceView(device, texture);
+            return new TextureCreationResult() { Texture = texture, ResourceView = resourceView };
         }
 
         object IEngineComponent.Tag => null;

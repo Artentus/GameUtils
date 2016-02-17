@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using SharpDX.Direct3D11;
 using TK = SharpDX.Toolkit.Graphics;
 
@@ -8,27 +9,21 @@ namespace GameUtils.Graphics
     /// <summary>
     /// Represents a 2D texture.
     /// </summary>
-    public sealed class Texture : IResource
+    public sealed class Texture : IGraphicsResource
     {
-        readonly string fileName;
-        readonly Stream stream;
-        readonly bool isFromFile;
-        readonly ResourceHandle handle;
         TK.Texture2D texture;
-        Renderer renderer;
+        volatile bool isReady;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
-
-        public object Tag { get; set; }
 
         /// <summary>
         /// Indicates whether the texture is loaded. If a texture isn't loaded it cannot be used.
         /// </summary>
         /// <remarks>This property might only be false if the texture is loaded asynchronously.</remarks>
-        public bool IsReady { get; private set; }
+        public bool IsReady => isReady;
 
-        internal bool LoadAsync { get; private set; }
+        public bool IsAsync { get; }
 
         internal ShaderResourceView ResourceView { get; private set; }
 
@@ -39,59 +34,78 @@ namespace GameUtils.Graphics
         /// <param name="fileName">A path to a valid texture file.</param>
         /// <param name="loadAsync">Optional. Pass true if you want the texture to be loaded asynchronously.
         /// This can reduce frame drops but the texture might not be available immediately (see <see cref="Texture.IsReady"/> property).</param>
+        /// <exception cref="InvalidOperationException">No renderer is registered.</exception>
         public Texture(string fileName, bool loadAsync = false)
         {
-            LoadAsync = loadAsync;
+            IsAsync = loadAsync;
 
-            this.fileName = fileName;
-            isFromFile = true;
-            handle = GameEngine.RegisterResource(this);
+            Renderer renderer = GameEngine.TryQueryComponent<Renderer>();
+            if (renderer == null) throw new InvalidOperationException("A renderer must be registered before a texture can be created.");
+
+            if (loadAsync)
+            {
+                Task.Run(() => renderer.CreateTexture(fileName))
+                    .ContinueWith((t) =>
+                    {
+                        var result = t.Result;
+                        texture = result.Texture;
+                        ResourceView = result.ResourceView;
+
+                        Width = texture.Width;
+                        Height = texture.Height;
+                        isReady = true;
+                    });
+            }
+            else
+            {
+                var result = renderer.CreateTexture(fileName);
+                texture = result.Texture;
+                ResourceView = result.ResourceView;
+
+                Width = texture.Width;
+                Height = texture.Height;
+                isReady = true;
+            }
         }
 
         /// <summary>
         /// Creates a texture from a stream.
         /// The stream can contain data of the types BMP, PNG, JPG and DDS.
         /// </summary>
-        /// /// <param name="stream">A stream containing valid texture data.</param>
+        /// <param name="stream">A stream containing valid texture data.</param>
         /// <param name="loadAsync">Optional. Pass true if you want the texture to be loaded asynchronously.
         /// This can reduce frame drops but the texture might not be available immediately (see <see cref="Texture.IsReady"/> property).</param>
-        /// <remarks>If it is possible that the renderer is changed the stream musst be preserved as long as the texture exists.</remarks>
+        /// <exception cref="InvalidOperationException">No renderer is registered.</exception>
         public Texture(Stream stream, bool loadAsync = false)
         {
-            LoadAsync = loadAsync;
+            IsAsync = loadAsync;
 
-            this.stream = stream;
-            isFromFile = false;
-            handle = GameEngine.RegisterResource(this);
-        }
+            Renderer renderer = GameEngine.QueryComponent<Renderer>();
+            if (renderer == null) throw new InvalidOperationException("A renderer must be registered before a texture can be created.");
 
-        void IResource.ApplyChanges()
-        {
-            Renderer newRenderer = GameEngine.QueryComponent<Renderer>();
-            if (renderer == null || renderer != newRenderer)
+            if (loadAsync)
             {
-                renderer = newRenderer;
-
-                if (ResourceView != null) ResourceView.Dispose();
-                if (texture != null) texture.Dispose();
-
-                if (renderer != null)
+                Task.Run(() => renderer.CreateTexture(stream))
+                .ContinueWith((t) =>
                 {
-                    ResourceView = isFromFile
-                        ? renderer.CreateTexture(fileName, out texture)
-                        : renderer.CreateTexture(stream, out texture);
+                    var result = t.Result;
+                    texture = result.Texture;
+                    ResourceView = result.ResourceView;
+
                     Width = texture.Width;
                     Height = texture.Height;
+                    isReady = true;
+                });
+            }
+            else
+            {
+                var result = renderer.CreateTexture(stream);
+                texture = result.Texture;
+                ResourceView = result.ResourceView;
 
-                    IsReady = true;
-                }
-                else
-                {
-                    ResourceView = null;
-                    texture = null;
-
-                    IsReady = false;
-                }
+                Width = texture.Width;
+                Height = texture.Height;
+                isReady = true;
             }
         }
 
@@ -101,36 +115,22 @@ namespace GameUtils.Graphics
         {
             if (!disposed)
             {
-                Dispose(true);
+                DisposeInner();
                 GC.SuppressFinalize(this);
 
                 disposed = true;
             }
         }
 
-        private void Dispose(bool disposing)
+        private void DisposeInner()
         {
-            if (disposing) Tag = null;
-
-            if (ResourceView != null) ResourceView.Dispose();
-            if (texture != null) texture.Dispose();
-            handle.Dispose();
+            ResourceView?.Dispose();
+            texture?.Dispose();
         }
 
         ~Texture()
         {
-            Dispose(false);
-        }
-
-        UpdateMode IResource.UpdateMode
-        {
-            get { return UpdateMode.InitUpdateAsynchronous; }
-        }
-
-        bool IResource.IsReady
-        {
-            get { return IsReady; }
-            set { }
+            DisposeInner();
         }
     }
 }
