@@ -22,7 +22,8 @@ namespace GameUtils.Graphics
         /// Renders the the given state.
         /// </summary>
         /// <param name="state">The state to render.</param>
+        /// <param name="elapsed">The time passed since state has been updated.</param>
         /// <param name="renderer">The renderer to use.</param>
-        void Render(TState state, Renderer renderer);
+        void Render(TState state, TimeSpan elapsed, Renderer renderer);
     }
 }

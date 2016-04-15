@@ -13,13 +13,21 @@ namespace GameUtils
     /// </summary>
     public sealed class GameLoop : RegistrationTargetBase, IEngineComponent
     {
+        readonly int desiredUpdatesPerSecond;
+
         Thread updateThread;
         Thread renderThread;
-        readonly AutoResetEvent[] updateHandle;
-        readonly AutoResetEvent[] renderHandle;
+
+        readonly Stopwatch gameTime;
+        volatile int currentBufferIndex;
+        readonly TimeSpan[] bufferUpdateTimes;
+
         readonly AutoResetEvent resourceUpdateHandle;
-        readonly List<double> frameTimes;
-        int currentBufferIndex;
+
+        readonly List<float> updateTimes;
+        volatile float ups;
+        readonly List<float> frameTimes;
+        volatile float fps;
 
         internal event EventHandler ResourceUpdateRequested;
 
@@ -34,44 +42,41 @@ namespace GameUtils
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Indicates the current framerate.
+        /// The current update rate.
         /// </summary>
-        public double Fps { get; private set; }
+        public float UpdatesPerSecond => ups;
 
-        protected override int CurrentBufferIndex
-        {
-            get { return currentBufferIndex; }
-        }
+        /// <summary>
+        /// The current frame rate.
+        /// </summary>
+        public float FramesPerSecond => fps;
+
+        protected override int CurrentBufferIndex => currentBufferIndex;
 
         bool IEngineComponent.IsCompatibleTo(IEngineComponent component)
         {
             return !(component is GameLoop);
         }
 
-        object IEngineComponent.Tag
-        {
-            get { return null; }
-        }
+        object IEngineComponent.Tag => null;
 
         /// <summary>
         /// Creates a new game loop.
         /// </summary>
-        public GameLoop(bool enableDepthBuffering = false)
+        public GameLoop(int desiredUpdatesPerSecond, bool enableDepthBuffering = false)
         {
+            this.desiredUpdatesPerSecond = desiredUpdatesPerSecond;
+
+            gameTime = new Stopwatch();
+            bufferUpdateTimes = new TimeSpan[BufferCount];
+
             this.IsRunning = false;
             EnableDepthBuffering = enableDepthBuffering;
 
-            updateHandle = new AutoResetEvent[2];
-            for (int i = 0; i < updateHandle.Length; i++)
-                updateHandle[i] = new AutoResetEvent(false);
-
-            renderHandle = new AutoResetEvent[2];
-            for (int i = 0; i < renderHandle.Length; i++)
-                renderHandle[i] = new AutoResetEvent(true);
-
             resourceUpdateHandle = new AutoResetEvent(true);
 
-            frameTimes = new List<double>();
+            updateTimes = new List<float>();
+            frameTimes = new List<float>();
 
             BackColor = Color4.Black;
         }
@@ -85,21 +90,20 @@ namespace GameUtils
 
             if (this.IsRunning)
             {
-                if (logger != null) logger.PostMessage(
-                    "It has been tried to start a already running game loop.",
+                logger?.PostMessage(
+                    "It has been tried to start an already running game loop.",
                     LogMessageKind.Warning, LogMessagePriority.Engine);
                 return;
             }
 
             this.IsRunning = true;
-            updateThread = new Thread(UpdateLoop);
-            updateThread.Name = "game update thread";
+            for (int i = 0; i < BufferCount; i++)
+                bufferUpdateTimes[i] = TimeSpan.Zero;
+            gameTime.Start();
+            updateThread = new Thread(UpdateLoop) { Name = "game update thread" };
             updateThread.Start();
-            renderThread = new Thread(RenderLoop);
-            renderThread.Name = "game render thread";
-            renderThread.Start();
-            
-            if (logger != null) logger.PostMessage(
+
+            logger?.PostMessage(
                 "Game loop started.",
                 LogMessageKind.Information, LogMessagePriority.Engine);
         }
@@ -108,7 +112,7 @@ namespace GameUtils
         /// Stops the loop.
         /// </summary>
         /// <remarks>
-        /// This method blocks until both update and render thread have terminated so don't call it from there.
+        /// This method blocks until both update and render thread have terminated so don't call it within these threads.
         /// </remarks>
         /// <exception cref="System.InvalidOperationException">Is thrown when the method was called from the update or the render thread.</exception>
         public void Stop()
@@ -118,7 +122,7 @@ namespace GameUtils
             if (Thread.CurrentThread.ManagedThreadId == updateThread.ManagedThreadId
                 || Thread.CurrentThread.ManagedThreadId == renderThread.ManagedThreadId)
             {
-                if (logger != null) logger.PostMessage(
+                logger?.PostMessage(
                     "Stopping of a game loop is impossible from the update thread or the render thread.",
                     LogMessageKind.Error, LogMessagePriority.Engine);
                 throw new InvalidOperationException("The loop must not be stopped from the update thread or the render thread.");
@@ -126,7 +130,7 @@ namespace GameUtils
 
             if (!this.IsRunning)
             {
-                if (logger != null) logger.PostMessage(
+                logger?.PostMessage(
                     "It has been tried to stop a already stopped game loop.",
                     LogMessageKind.Warning, LogMessagePriority.Engine);
                 return;
@@ -135,72 +139,99 @@ namespace GameUtils
             this.IsRunning = false;
             resourceUpdateHandle.Set();
             updateThread.Join();
-            renderThread.Join();
-            Fps = 0;
-            frameTimes.Clear();
-
-            for (int i = 0; i < updateHandle.Length; i++)
-                updateHandle[i].Reset();
-            for (int i = 0; i < renderHandle.Length; i++)
-                renderHandle[i].Set();
+            renderThread?.Join();
+            updateThread = null;
+            renderThread = null;
             resourceUpdateHandle.Set();
 
-            if (logger != null) logger.PostMessage(
+            gameTime.Reset();
+            ups = 0;
+            fps = 0;
+            updateTimes.Clear();
+            frameTimes.Clear();
+
+            logger?.PostMessage(
                 "Game loop stopped.",
                 LogMessageKind.Information, LogMessagePriority.Engine);
         }
 
+        private static void WaitForElapsed(Stopwatch sw, TimeSpan targetElapsed)
+        {
+            var bufferTime = TimeSpan.FromMilliseconds(1);
+            if (sw.Elapsed < (targetElapsed - bufferTime))
+            {
+                Thread.Sleep(targetElapsed - sw.Elapsed - bufferTime);
+            }
+
+            while (sw.Elapsed < targetElapsed) { }
+        }
+
         private void UpdateLoop()
         {
-            Stopwatch sw = new Stopwatch();
-            TimeSpan elapsed = default(TimeSpan);
-            int bufferIndex = 0x0;
-            currentBufferIndex = 0x1;
+            var elapsed = TimeSpan.Zero;
+            var targetElapsed = TimeSpan.FromTicks((long)((1000.0 / desiredUpdatesPerSecond) * TimeSpan.TicksPerMillisecond));
+            int bufferIndex = 0;
+            currentBufferIndex = BufferCount - 1;
 
             while (this.IsRunning)
             {
-                sw.Start();
+                TimeSpan startTime = gameTime.Elapsed;
+                bufferUpdateTimes[bufferIndex] = startTime;
 
                 Parallel.ForEach(Updateables, updateable => updateable.SetCurrentBufferIndex(currentBufferIndex));
 
                 Update(bufferIndex, elapsed);
-
+                WaitForElapsed(gameTime, startTime + targetElapsed);
                 currentBufferIndex = bufferIndex;
-                bufferIndex ^= 0x1;
-                elapsed = sw.Elapsed;
-                sw.Reset();
+                bufferIndex = (bufferIndex + 1) % BufferCount;
+
+                elapsed = gameTime.Elapsed - startTime;
+
+                updateTimes.Add((float)elapsed.TotalMilliseconds);
+                int counter = 0;
+                int index = updateTimes.Count - 1;
+                float ms = 0;
+                while (index >= 0 && ms + updateTimes[index] <= 1000)
+                {
+                    ms += updateTimes[index];
+                    counter++;
+                    index--;
+                }
+                if (index > 0) updateTimes.RemoveRange(0, index);
+                ups = counter + ((1000 - ms) / updateTimes[0]);
+
+                if (renderThread == null)
+                {
+                    renderThread = new Thread(RenderLoop) { Name = "game render thread" };
+                    renderThread.Start();
+                }
             }
         }
 
         private void Update(int bufferIndex, TimeSpan elapsed)
         {
-            renderHandle[bufferIndex].WaitOne();
-            resourceUpdateHandle.WaitOne();
+            //resourceUpdateHandle.WaitOne();
 
             Updateables.ApplyChanges();
             Parallel.ForEach(Updateables, updateable => updateable.Update(bufferIndex, elapsed));
-
-            updateHandle[bufferIndex].Set();
         }
 
         private void RenderLoop()
         {
             Renderer renderer = GameEngine.QueryComponent<Renderer>();
-            var sw = new Stopwatch();
-            int bufferIndex = 0x0;
 
             while (this.IsRunning)
             {
-                sw.Restart();
+                TimeSpan startTime = gameTime.Elapsed;
 
-                Render(bufferIndex, renderer);
-                bufferIndex ^= 0x1;
+                Render(currentBufferIndex, gameTime.Elapsed - bufferUpdateTimes[currentBufferIndex], renderer);
 
-                sw.Stop();
-                frameTimes.Add(sw.Elapsed.TotalMilliseconds);
+                TimeSpan elapsed = gameTime.Elapsed - startTime;
+
+                frameTimes.Add((float)elapsed.TotalMilliseconds);
                 int counter = 0;
                 int index = frameTimes.Count - 1;
-                double ms = 0;
+                float ms = 0;
                 while (index >= 0 && ms + frameTimes[index] <= 1000)
                 {
                     ms += frameTimes[index];
@@ -208,17 +239,14 @@ namespace GameUtils
                     index--;
                 }
                 if (index > 0) frameTimes.RemoveRange(0, index);
-                Fps = counter + ((1000 - ms) / frameTimes[0]);
+                fps = counter + ((1000 - ms) / frameTimes[0]);
             }
         }
 
-        private void Render(int bufferIndex, Renderer renderer)
+        private void Render(int bufferIndex, TimeSpan elapsed, Renderer renderer)
         {
-            updateHandle[bufferIndex].WaitOne();
-
             Renderables.ApplyChanges();
-            if (ResourceUpdateRequested != null)
-                ResourceUpdateRequested(this, EventArgs.Empty);
+            ResourceUpdateRequested?.Invoke(this, EventArgs.Empty);
             resourceUpdateHandle.Set();
 
             SortRenderables();
@@ -226,10 +254,9 @@ namespace GameUtils
             renderer.BeginRender(BackColor);
 
             foreach (RenderContainer renderable in Renderables)
-                renderable.Render(bufferIndex, renderer);
+                renderable.Render(bufferIndex, elapsed, renderer);
 
             renderer.EndRender();
-            renderHandle[bufferIndex].Set();
         }
     }
 }

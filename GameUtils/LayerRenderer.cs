@@ -19,10 +19,7 @@ namespace GameUtils
             remove { DepthPositionChanged -= value; }
         }
 
-        float IStateRenderer<TState>.DepthPosition
-        {
-            get { return depthPosition; }
-        }
+        float IStateRenderer<TState>.DepthPosition => depthPosition;
 
         internal float DepthPosition
         {
@@ -30,8 +27,7 @@ namespace GameUtils
             set
             {
                 depthPosition = value;
-                if (DepthPositionChanged != null)
-                    DepthPositionChanged(this, EventArgs.Empty);
+                DepthPositionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -40,19 +36,18 @@ namespace GameUtils
             this.renderables = renderables;
         }
 
-        void IStateRenderer<TState>.Render(TState state, Renderer renderer)
+        void IStateRenderer<TState>.Render(TState state, TimeSpan elapsed, Renderer renderer)
         {
-            OnRender(state, renderer);
+            OnRender(state, elapsed, renderer);
         }
 
-        protected virtual void OnRender(TState state, Renderer renderer)
+        protected virtual void OnRender(TState state, TimeSpan elapsed, Renderer renderer)
         {
             renderables.ApplyChanges();
-            if (SortingRequested != null)
-                SortingRequested(this, EventArgs.Empty);
-            
+            SortingRequested?.Invoke(this, EventArgs.Empty);
+
             foreach (RenderContainer renderable in renderables)
-                renderable.Render(state.BufferIndex, renderer);
+                renderable.Render(state.BufferIndex, elapsed, renderer);
         }
     }
 

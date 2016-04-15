@@ -17,7 +17,7 @@ namespace TestApp
 
         public class TesterRenderable : IStateRenderer<TesterUpdateable>
         {
-            public void Render(TesterUpdateable state, Renderer renderer)
+            public void Render(TesterUpdateable state, TimeSpan elapsed, Renderer renderer)
             {
                 if (state.Brush1.IsReady && state.Brush2.IsReady)
                 {
@@ -66,7 +66,7 @@ namespace TestApp
                         Brush1 = oldState.Brush1;
                     else
                     {
-                        Brush1 = new TextureBrush(@"D:\Mathis\Bilder\Penrose_triangle_outline.png", true);
+                        Brush1 = new TextureBrush(@"..\..\Penrose_triangle_outline.png", true);
                         ((TextureBrush)Brush1).WrapMode = WrapMode.Tile;
                         //Brush.Transform = Matrix2x3.Rotation(0.25f); //Matrix2x3.Scaling(2);
 
@@ -109,7 +109,7 @@ namespace TestApp
                 //    if (oldState.Font != null)
                 //        Font = oldState.Font;
                 //    else
-                //        Font = new Font(@"D:\Mathis\Dokumente\Visual Studio 2013\Projects\GameUtils\FontConverter\bin\Debug\Consolas.guf");
+                //        Font = new Font(@"..\..\Consolas.guf");
                 //}
 
                 //if (Geometry == null)

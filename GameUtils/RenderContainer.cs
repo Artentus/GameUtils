@@ -9,7 +9,7 @@ namespace GameUtils
 
         public abstract float DepthPosition { get; }
 
-        public abstract void Render(int bufferIndex, Renderer renderer);
+        public abstract void Render(int bufferIndex, TimeSpan elapsed, Renderer renderer);
 
         int IComparable<RenderContainer>.CompareTo(RenderContainer other)
         {
@@ -29,10 +29,7 @@ namespace GameUtils
             remove { renderer.DepthPositionChanged -= value; }
         }
 
-        public override float DepthPosition
-        {
-            get { return renderer.DepthPosition; }
-        }
+        public override float DepthPosition => renderer.DepthPosition;
 
         public RenderContainer(UpdateContainer<TState> updateContainer, TState[] buffers, RegistrationContext<TState> context)
         {
@@ -41,10 +38,10 @@ namespace GameUtils
             renderer = context.Renderer;
         }
 
-        public override void Render(int bufferIndex, Renderer renderer)
+        public override void Render(int bufferIndex, TimeSpan elapsed, Renderer renderer)
         {
             if (updateContainer.AvailableForRendering)
-                this.renderer.Render(buffers[bufferIndex], renderer);
+                this.renderer.Render(buffers[bufferIndex], elapsed, renderer);
         }
     }
 }

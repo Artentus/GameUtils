@@ -8,6 +8,8 @@ namespace GameUtils
 {
     public abstract class RegistrationTargetBase
     {
+        protected const int BufferCount = 3;
+
         protected internal readonly BufferedLinkedList<UpdateContainer> Updateables;
         protected internal readonly BufferedList<RenderContainer> Renderables;
 
@@ -47,14 +49,14 @@ namespace GameUtils
             Logger logger = GameEngine.TryQueryComponent<Logger>();
             if (context == null)
             {
-                if (logger != null) logger.PostMessage(
+                logger?.PostMessage(
                     string.Format("An atempt to register 'null' on target {0} has been made.", this.GetType().FullName),
                     LogMessageKind.Error, LogMessagePriority.Engine);
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             }
 
             RenderContainer renderable;
-            var node = Updateables.Add(new UpdateContainer<T>(context, out renderable));
+            var node = Updateables.Add(new UpdateContainer<T>(context, BufferCount, out renderable));
             if (renderable != null)
             {
                 Renderables.Add(renderable);
@@ -62,9 +64,9 @@ namespace GameUtils
                 sortAtNextCall = true;
             }
 
-            if (logger != null) logger.PostMessage(
+            logger?.PostMessage(
                 string.Format("Game handle {0} has been registered in context {1} on target {2}.",
-                typeof(GameHandle<T>).FullName, context.GetType().FullName, this.GetType().FullName),
+                    typeof(GameHandle<T>).FullName, context.GetType().FullName, this.GetType().FullName),
                 LogMessageKind.Information, LogMessagePriority.Engine);
 
             return new GameHandle<T>(this, node, renderable);

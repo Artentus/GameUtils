@@ -38,13 +38,14 @@ namespace GameUtils.Graphics
         public Texture(string fileName, bool loadAsync = false)
         {
             IsAsync = loadAsync;
+            var file = new FileInfo(fileName);
 
             Renderer renderer = GameEngine.TryQueryComponent<Renderer>();
             if (renderer == null) throw new InvalidOperationException("A renderer must be registered before a texture can be created.");
 
             if (loadAsync)
             {
-                Task.Run(() => renderer.CreateTexture(fileName))
+                Task.Run(() => renderer.CreateTexture(file.FullName))
                     .ContinueWith((t) =>
                     {
                         var result = t.Result;
@@ -58,7 +59,7 @@ namespace GameUtils.Graphics
             }
             else
             {
-                var result = renderer.CreateTexture(fileName);
+                var result = renderer.CreateTexture(file.FullName);
                 texture = result.Texture;
                 ResourceView = result.ResourceView;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace GameUtils
 {
@@ -37,11 +38,13 @@ namespace GameUtils
 
         public bool AvailableForRendering { get; private set; }
 
-        public UpdateContainer(RegistrationContext<TState> context, out RenderContainer renderer)
+        public UpdateContainer(RegistrationContext<TState> context, int bufferCount, out RenderContainer renderer)
         {
             this.context = context;
             AvailableForRendering = false;
-            buffers = new[] { context.CreateBuffer(), context.CreateBuffer() };
+            buffers = new TState[bufferCount];
+            for (int i = 0; i < bufferCount; i++)
+                buffers[i] = context.CreateBuffer();
             renderer = context.Renderer != null ? new RenderContainer<TState>(this, buffers, context) : null;
         }
 
@@ -57,14 +60,16 @@ namespace GameUtils
 
         public override void Update(int bufferIndex, TimeSpan elapsed)
         {
-            buffers[bufferIndex].Update(buffers[bufferIndex ^ 0x1], elapsed);
+            int oldBufferIndex = bufferIndex - 1;
+            if (oldBufferIndex < 0) oldBufferIndex = buffers.Length - 1;
+            buffers[bufferIndex].Update(buffers[oldBufferIndex], elapsed);
             AvailableForRendering = true;
         }
 
         protected override void Dispose(bool disposing)
         {
             IDisposable disposable = context as IDisposable;
-            if (disposable != null) disposable.Dispose();
+            disposable?.Dispose();
         }
     }
 }

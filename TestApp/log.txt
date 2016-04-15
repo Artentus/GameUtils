@@ -1,0 +1,7 @@
+[2016-04-15 18:50:24] [Info] Engine component GameUtils.Logging.LogFile successfully registered.
+[2016-04-15 18:50:24] [Info] Engine component GameUtils.GameLoop successfully registered.
+[2016-04-15 18:50:24] [Info] Engine component TestApp.GameWindow successfully registered.
+[2016-04-15 18:50:24] [Info] Engine component GameUtils.Graphics.Renderer successfully registered.
+[2016-04-15 18:50:24] [Info] Game handle GameUtils.GameHandle`1[[TestApp.Tester+TesterUpdateable, TestApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] has been registered in context TestApp.Tester on target GameUtils.GameLoop.
+[2016-04-15 18:50:24] [Info] Game loop started.
+[2016-04-15 18:51:10] [Info] Game loop stopped.
